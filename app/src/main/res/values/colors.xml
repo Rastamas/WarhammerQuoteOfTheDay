@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="emperorPrimary">#BE4500</color> <!-- Chocolate Brown -->
+    <color name="emperorPrimaryDark">#FF672614</color> <!-- Red Oxide -->
+    <color name="emperorAccent">#FcF7C4</color> <!-- Corn field yellow -->
+    <color name="eldar1Primary">#E63951</color> <!-- Amaranth red -->
+    <color name="eldar1PrimaryDark">#4F3B59</color> <!-- Bossanova violet -->
+    <color name="eldar1Accent">#D2C7D6</color> <!-- Thistle violet -->
+    <color name="eldar2Primary">#BFD2BF</color> <!-- Paris White Green -->
+    <color name="eldar2PrimaryDark">#36443D</color> <!-- Mine shaft blue -->
+    <color name="eldar2Accent">#B45D37</color> <!-- Smoke tree orange -->
+</resources>

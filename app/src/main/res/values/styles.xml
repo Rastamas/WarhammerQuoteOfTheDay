@@ -1,0 +1,35 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="BloodRaven" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/emperorPrimary</item>
+        <item name="colorPrimaryDark">@color/emperorPrimaryDark</item>
+        <item name="colorAccent">@color/emperorAccent</item>
+        <item name="android:opacity">opaque</item>
+    </style>
+    <style name="Eldar1" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/eldar1Primary</item>
+        <item name="colorPrimaryDark">@color/eldar1PrimaryDark</item>
+        <item name="colorAccent">@color/eldar1Accent</item>
+    </style>
+    <style name="Eldar2" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/eldar2Primary</item>
+        <item name="colorPrimaryDark">@color/eldar2PrimaryDark</item>
+        <item name="colorAccent">@color/eldar2Accent</item>
+    </style>
+
+    <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splashcreen</item>
+        <item name="android:colorPrimaryDark">@color/emperorPrimaryDark</item>
+    </style>
+
+    <style name="BloodRaven.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/emperorAccent</item>
+        <item name="android:background">@drawable/emperor_button</item>
+    </style>
+
+</resources>
