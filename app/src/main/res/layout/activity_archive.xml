@@ -22,11 +22,12 @@
         android:id="@+id/button_clear_archives"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear archives"
+        android:text="@string/clear_archives"
         style="@style/BloodRaven.Button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:onClick="clearArchives"
+        android:visibility="gone"
         />
 
 </RelativeLayout>
