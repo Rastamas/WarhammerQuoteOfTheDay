@@ -63,7 +63,16 @@ public class MainActivity extends AppCompatActivity {
         else{
             mQuoteTextView.animate().alpha(0.0f).setDuration(1500);
         }
-        arvhiveQuote();
+        if(mQuote != null){
+            arvhiveQuote();
+        }
+        else {
+            contactDeveloper();
+        }
+    }
+    
+    private void contactDeveloper(){
+        //TODO
     }
 
     private void arvhiveQuote() {
@@ -73,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         String key = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
 
         if(mArchives.getString(key, null) == null){
-            mArchives.edit().putString(key, mQuote).apply();        }
+            mArchives.edit().putString(key, mQuote).apply();        
+        }
     }
 
     public void archivesButtonOnClick(View view){
@@ -106,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String response){
             if(response == null){
-                response = "No quote for the day :(\nPlease contact r.tamas.szabo@gmail.com";
+                mQuote = null;
+                return;
             }
             Log.i("INFO", response);
             mQuote = response.replaceAll("^\"|\"$", "");
