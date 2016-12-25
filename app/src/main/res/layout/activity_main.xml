@@ -13,6 +13,14 @@
     tools:context="com.rastamas.warhammerquoteoftheday.MainActivity">
 
     <Button
+        android:id="@+id/button_change_theme"
+        android:text="Change theme"
+        android:onClick="themeButtonOnClick"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        style="@style/BloodRaven.Button"
+        />
+    <Button
         android:id="@+id/button_archives"
         android:text="Archives"
         android:onClick="archivesButtonOnClick"

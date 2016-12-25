@@ -7,28 +7,26 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.net.URL;
-import java.security.PublicKey;
 import java.util.Date;
+
 
 public class MainActivity extends AppCompatActivity {
 
     public static SharedPreferences mArchives;
     private TextView mQuoteTextView;
     private Button mToggleButton;
+    private Button mThemeButton;
     private Button mArchivesButton;
-    private Typeface custom_font;
     private String mQuote;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +43,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewReferences(){
         mQuoteTextView = (TextView) findViewById(R.id.textview_quote);
+        mThemeButton = (Button) findViewById(R.id.button_change_theme);
         mToggleButton = (Button) findViewById(R.id.button_toggle_quote);
         mArchivesButton = (Button) findViewById(R.id.button_archives);
     }
 
     private void setupFonts(){
-        custom_font = Typeface.createFromAsset(getAssets(), "fonts/CaslonAntiqueBold.ttf");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/CaslonAntiqueBold.ttf");
         mArchivesButton.setTypeface(custom_font);
         mQuoteTextView.setTypeface(custom_font);
         mToggleButton.setTypeface(custom_font);
+        mThemeButton.setTypeface(custom_font);
+
     }
 
     public void toggleQuote(View view) {
         if(mQuote != null){
-            arvhiveQuote();
+            archiveQuote();
         }
         else {
             contactDeveloper();
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO
     }
 
-    private void arvhiveQuote() {
+    private void archiveQuote() {
         Date today = new Date();
         String[] dateStringParts = today.toString().split(" ");
         //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
@@ -86,9 +87,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void changeTheme(int themeID){
+        setTheme(themeID);
+        setContentView(R.layout.activity_main);
+    }
+
     public void archivesButtonOnClick(View view){
         Intent intent = new Intent(this, ArchiveActivity.class);
         startActivity(intent);
+    }
+
+    public void themeButtonOnClick(View view) {
+        changeTheme(R.style.Eldar1);
     }
 
     class GetQuoteTask extends AsyncTask<Void, Void, String>
