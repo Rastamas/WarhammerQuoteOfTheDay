@@ -57,17 +57,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleQuote(View view) {
-        if(mQuoteTextView.getAlpha() == 0.0f){
-            mQuoteTextView.animate().alpha(1.0f).setDuration(1500);
-        }
-        else{
-            mQuoteTextView.animate().alpha(0.0f).setDuration(1500);
-        }
         if(mQuote != null){
             arvhiveQuote();
         }
         else {
             contactDeveloper();
+        }
+        if(mQuoteTextView.getAlpha() == 0.0f){
+            mQuoteTextView.animate().alpha(1.0f).setDuration(1500);
+        }
+        else{
+            mQuoteTextView.animate().alpha(0.0f).setDuration(1500);
         }
     }
     
