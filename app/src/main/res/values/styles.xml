@@ -3,10 +3,15 @@
     <!-- Base application theme. -->
     <style name="BloodRaven" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/emperorPrimary</item>
-        <item name="colorPrimaryDark">@color/emperorPrimaryDark</item>
-        <item name="colorAccent">@color/emperorAccent</item>
+        <item name="colorPrimary">@color/bloodRavenPrimary</item>
+        <item name="colorPrimaryDark">@color/bloodRavenPrimaryDark</item>
+        <item name="colorAccent">@color/bloodRavenAccent</item>
         <item name="android:opacity">opaque</item>
+        <item name="android:colorBackground">@color/bloodRavenPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/bloodRavenAccent</item>
+        <item name="android:textColorSecondary">@color/bloodRavenAccent</item>
+        <item name="android:textColorSecondaryInverse">@color/bloodRavenAccent</item>
+        <item name="android:colorForeground">@android:color/background_dark</item>
     </style>
     <style name="Eldar1" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/eldar1Primary</item>
@@ -21,15 +26,24 @@
 
     <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splashcreen</item>
-        <item name="android:colorPrimaryDark">@color/emperorPrimaryDark</item>
+        <item name="android:colorPrimaryDark">@color/bloodRavenPrimaryDark</item>
     </style>
 
-    <style name="BloodRaven.Button">
+    <style name="WarHammerButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/emperorAccent</item>
-        <item name="android:background">@drawable/emperor_button</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+    </style>
+
+    <style name="WarhammerTextView">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowColor">#000000</item>
     </style>
 
 </resources>

@@ -9,13 +9,13 @@
     <item android:state_focused="true">
         <shape android:shape="rectangle">
             <corners android:radius="5dip" />
-            <solid android:color="@color/emperorPrimary" />
+            <solid android:color="@color/bloodRavenPrimary" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="5dip" />
-            <gradient android:startColor="@color/emperorPrimary" android:endColor="#FF8740" android:angle="-90" />
+            <gradient android:startColor="@color/bloodRavenPrimary" android:endColor="#FF8740" android:angle="-90" />
         </shape>
     </item>
 </selector>

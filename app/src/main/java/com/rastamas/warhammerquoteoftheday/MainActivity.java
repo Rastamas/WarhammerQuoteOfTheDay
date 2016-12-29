@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -30,11 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupViewReferences();
+        changeTheme(R.style.BloodRaven);
         mArchives = getPreferences(0);
 
-        setupViewReferences();
         setupFonts();
 
         new GetQuoteTask().execute();
@@ -89,7 +92,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeTheme(int themeID){
         setTheme(themeID);
-        setContentView(R.layout.activity_main);
+        if(themeID == R.style.BloodRaven) {
+            RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
+            mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background));
+            mToggleButton.setBackground(getDrawable(R.drawable.emperor_button));
+            mArchivesButton.setBackground(getDrawable(R.drawable.emperor_button));
+            mThemeButton.setBackground(getDrawable(R.drawable.emperor_button));
+            mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
+        }
+
     }
 
     public void archivesButtonOnClick(View view){

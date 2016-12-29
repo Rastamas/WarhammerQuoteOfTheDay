@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WarhammerQuoteOfTheDay</string>
     <string name="clear_archives">Clear archives</string>
+    <string name="bloodraven_raven_toggle"> FOR THE EMPEROR! </string>
 </resources>

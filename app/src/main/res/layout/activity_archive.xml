@@ -8,22 +8,26 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/emperorPrimaryDark"
+    android:background="@color/bloodRavenPrimaryDark"
     tools:context="com.rastamas.warhammerquoteoftheday.ArchiveActivity"
     >
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/archive_list_liner_layout"
         android:orientation="vertical"></LinearLayout>
-
+    </ScrollView>
     <Button
         android:id="@+id/button_clear_archives"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/clear_archives"
-        style="@style/BloodRaven.Button"
+        style="@style/WarHammerButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:onClick="clearArchives"

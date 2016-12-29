@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/emperorPrimaryDark"
+    android:background="@color/bloodRavenPrimaryDark"
 
     tools:context="com.rastamas.warhammerquoteoftheday.MainActivity">
 
@@ -18,7 +18,9 @@
         android:onClick="themeButtonOnClick"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        style="@style/BloodRaven.Button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        style="@style/WarHammerButton"
         />
     <Button
         android:id="@+id/button_archives"
@@ -26,7 +28,9 @@
         android:onClick="archivesButtonOnClick"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        style="@style/BloodRaven.Button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        style="@style/WarHammerButton"
         />
 
     <TextView
@@ -36,16 +40,16 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:alpha="0"
-        android:textSize="32sp"
-        android:textColor="@color/emperorAccent"
-        android:textAlignment="center"
+        style="@style/WarhammerTextView"
         />
     <Button
         android:id="@+id/button_toggle_quote"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:text=" FOR THE EMPEROR! "
-        style="@style/BloodRaven.Button"
-
-        android:onClick="toggleQuote"/>
+        android:text="@string/bloodraven_raven_toggle"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:onClick="toggleQuote"
+        style="@style/WarHammerButton"
+        />
 </RelativeLayout>
