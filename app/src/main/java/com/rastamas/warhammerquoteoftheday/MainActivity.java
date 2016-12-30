@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mToggleButton;
     private Button mThemeButton;
     private Button mArchivesButton;
+    private ImageButton mVisibilityButton;
     private String mQuote;
 
 
@@ -41,8 +43,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupViewReferences();
         changeTheme(R.style.BloodRaven);
-        mArchives = getPreferences(0);
 
+        mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
+        mArchives = getPreferences(0);
         setupFonts();
 
         new GetQuoteTask().execute();
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mThemeButton = (Button) findViewById(R.id.button_change_theme);
         mToggleButton = (Button) findViewById(R.id.button_toggle_quote);
         mArchivesButton = (Button) findViewById(R.id.button_archives);
+        mVisibilityButton = (ImageButton) findViewById(R.id.button_visibility);
     }
 
     private void setupFonts() {
@@ -64,6 +68,18 @@ public class MainActivity extends AppCompatActivity {
         mToggleButton.setTypeface(custom_font);
         mThemeButton.setTypeface(custom_font);
 
+    }
+
+    public void toggleVisibility(View view){
+        if(mArchivesButton.getVisibility() == View.VISIBLE){
+            mArchivesButton.setVisibility(View.INVISIBLE);
+            mThemeButton.setVisibility(View.INVISIBLE);
+            mVisibilityButton.setImageResource(R.drawable.ic_show_button);
+        } else {
+            mArchivesButton.setVisibility(View.VISIBLE);
+            mThemeButton.setVisibility(View.VISIBLE);
+            mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
+        }
     }
 
     public void toggleQuote(View view) {
