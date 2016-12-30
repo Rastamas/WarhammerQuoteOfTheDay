@@ -2,7 +2,10 @@ package com.rastamas.warhammerquoteoftheday;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -95,9 +98,11 @@ public class MainActivity extends AppCompatActivity {
         if(themeID == R.style.BloodRaven) {
             RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
             mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background));
-            mToggleButton.setBackground(getDrawable(R.drawable.emperor_button));
-            mArchivesButton.setBackground(getDrawable(R.drawable.emperor_button));
-            mThemeButton.setBackground(getDrawable(R.drawable.emperor_button));
+            Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
+            Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage, 600, 200, true);
+            mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
+            mArchivesButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
+            mThemeButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
             mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
         }
 
