@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     private void changeTheme(int themeID) {
         setTheme(themeID);
         if (themeID == R.style.BloodRaven) {
-            mainLayout.setBackground(getDrawable(R.drawable.bloodraven1_background));
+            mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
             Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
             Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage, 600, 200, true);
             mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
@@ -132,11 +132,11 @@ public class MainActivity extends AppCompatActivity {
     public void backgroundButtonOnClick(View view) {
         switch(backgroundID) {
             case 0 :
-                mainLayout.setBackground(getDrawable(R.drawable.bloodraven2_background));
+                mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background2));
                 backgroundID++;
                 break;
             case 1 :
-                mainLayout.setBackground(getDrawable(R.drawable.bloodraven1_background));
+                mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
                 backgroundID = 0;
                 break;
     }}
