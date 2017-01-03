@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //http://pastebin.com/ZCNQr7Sy - needs testing
     public void toggleQuote(View view) {
         if (mQuote != null) {
             archiveQuote();
