@@ -82,12 +82,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //http://pastebin.com/ZCNQr7Sy - needs testing
     public void toggleQuote(View view) {
         if (mQuote != null) {
-            archiveQuote();
+            Date yesterday = new Date(new Date().getTime() - 24 * 3600 * 1000);
+            String[] dateStringParts = yesterday.toString().split(" ");
+            //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
+            String key = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
+            String prevQuote = mArchives.getString(key, null);
+            if(mQuote != prevQuote){
+                archiveQuote();
+            }
         } else {
-            contactDeveloper();
+            new GetQuoteTask().execute();
+            //contactDeveloper();
         }
         if (mQuoteTextView.getAlpha() == 0.0f) {
             mQuoteTextView.animate().alpha(1.0f).setDuration(1500);
