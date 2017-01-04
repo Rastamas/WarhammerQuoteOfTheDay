@@ -51,7 +51,7 @@
         android:alpha="0.6"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:contentDescription="Hide / show top buttons"/>
+        android:contentDescription="@string/hide_show_top_buttons"/>
     <Button
         android:id="@+id/button_toggle_quote"
         android:layout_centerHorizontal="true"
