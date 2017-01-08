@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mVisibilityButton;
     private String mQuote;
 
+    private DBAdapter mDBAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
