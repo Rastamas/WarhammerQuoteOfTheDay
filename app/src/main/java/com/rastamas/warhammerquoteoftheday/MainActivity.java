@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mThemeButton;
     private Button mArchivesButton;
     private ImageButton mVisibilityButton;
+    private ImageButton mSettingsButton;
     private String mQuote;
 
     public DBAdapter mDBAdapter;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         changeTheme(R.style.BloodRaven);
 
         mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
+        mSettingsButton.setImageResource(R.drawable.ic_settings);
         setupFonts();
 
         mDBAdapter = new DBAdapter(getApplicationContext());
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mToggleButton = (Button) findViewById(R.id.button_toggle_quote);
         mArchivesButton = (Button) findViewById(R.id.button_archives);
         mVisibilityButton = (ImageButton) findViewById(R.id.button_visibility);
+        mSettingsButton = (ImageButton) findViewById(R.id.button_settings);
     }
 
     private void setupFonts() {
@@ -151,6 +154,11 @@ public class MainActivity extends AppCompatActivity {
                 backgroundID = 0;
                 break;
     }}
+
+    public void buttonSettingsOnClick(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 
     class GetQuoteTask extends AsyncTask<Void, Void, String> {
         @Override

@@ -26,15 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ArchiveActivity"></activity>
+        <activity android:name=".ArchiveActivity" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
-</manifest><!--
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
--->
+</manifest>
