@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             mDBAdapter.open();
             String prevQuote = mDBAdapter.getQuote(key);
             mDBAdapter.close();
-            if(mQuote != prevQuote){
+            if(mQuote.equals(prevQuote)){
                 archiveQuote();
             }
         } else {
