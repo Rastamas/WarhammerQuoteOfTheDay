@@ -1,10 +1,13 @@
 package com.rastamas.warhammerquoteoftheday;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.TreeMap;
 
 /**
  * Created by Rasta on 05/01/2017.
@@ -17,7 +20,7 @@ public class DBAdapter {
     private static final String DATABASE_NAME = "quotedb";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String DATABASE_CREATE = "create table quotes (date string primary key , "
+    private static final String DATABASE_CREATE = "create table if not exists quotes (date string primary key , "
             + "quote TEXT" + ");";
 
     private DatabaseHelper mDbHelper;
@@ -38,13 +41,38 @@ public class DBAdapter {
     }
 
     public String getQuote(String key){
-        return mDb.query("quotes", new String[] {"quote"}, "date = " + key, null, null, null, null).getString(0);
+        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = '" + key + "'", null, null, null, null);
+        String quote = "";
+        if (cursor != null && cursor.moveToFirst()) quote = cursor.getString(0);
+        return quote;
     }
 
     public void putQuote(String date, String quote){
-        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES(" + date + "," + quote + ")");
+        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES('" + date + "','" + quote + "')");
     }
-    
+
+    public TreeMap<String,String> getAllQuotes(){
+        Cursor cursor = mDb.rawQuery("SELECT date, quote FROM quotes;", null); //mDb.query("quotes", new String[] {"date", "qoute"}, null, null, null, null, null);
+
+        TreeMap<String, String> quotes = new TreeMap<>();
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                int cursorDateIndex =cursor.getColumnIndex("date");
+                int cursorQuoteIndex = cursor.getColumnIndex("quote");
+                do{
+                quotes.put(cursor.getString(cursorDateIndex), cursor.getString(cursorQuoteIndex));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+
+        return quotes;
+    }
+
+    public void clearQuotes(){
+        mDb.execSQL("DELETE FROM quotes;");
+    }
+
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         DatabaseHelper(Context context) {

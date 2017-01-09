@@ -25,7 +25,6 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static SharedPreferences mArchives;
     private RelativeLayout mainLayout;
     private static int backgroundID = 0;
     private TextView mQuoteTextView;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mVisibilityButton;
     private String mQuote;
 
-    private DBAdapter mDBAdapter;
+    public DBAdapter mDBAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
         changeTheme(R.style.BloodRaven);
 
         mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
-        mArchives = getPreferences(0);
         setupFonts();
+
+        mDBAdapter = new DBAdapter(getApplicationContext());
 
         new GetQuoteTask().execute();
     }
@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity {
             String[] dateStringParts = yesterday.toString().split(" ");
             //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
             String key = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
-            String prevQuote = mArchives.getString(key, null);
+            mDBAdapter.open();
+            String prevQuote = mDBAdapter.getQuote(key);
+            mDBAdapter.close();
             if(mQuote != prevQuote){
                 archiveQuote();
             }
@@ -98,9 +100,9 @@ public class MainActivity extends AppCompatActivity {
             //contactDeveloper();
         }
         if (mQuoteTextView.getAlpha() == 0.0f) {
-            mQuoteTextView.animate().alpha(1.0f).setDuration(1500);
+            mQuoteTextView.animate().alpha(1.0f).setDuration(1000);
         } else {
-            mQuoteTextView.animate().alpha(0.0f).setDuration(1500);
+            mQuoteTextView.animate().alpha(0.0f).setDuration(1000);
         }
     }
 
@@ -114,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
         //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
         String key = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
 
-        if (mArchives.getString(key, null) == null) {
-            mArchives.edit().putString(key, mQuote).apply();
-        }
+        mDBAdapter.open();
+        mDBAdapter.putQuote(key, mQuote);
+        mDBAdapter.close();
     }
 
     private void changeTheme(int themeID) {

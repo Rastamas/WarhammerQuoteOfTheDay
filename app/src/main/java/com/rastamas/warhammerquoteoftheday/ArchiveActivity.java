@@ -17,6 +17,8 @@ import java.util.TreeMap;
 public class ArchiveActivity extends AppCompatActivity {
 
     private LinearLayout mArchiveLayout;
+    private DBAdapter mDBAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +28,10 @@ public class ArchiveActivity extends AppCompatActivity {
         Button clearArchivesButton = (Button) findViewById(R.id.button_clear_archives);
         clearArchivesButton.setTypeface(custom_font);
 
-        TreeMap archives = new TreeMap(MainActivity.mArchives.getAll());
+        mDBAdapter = new DBAdapter(getApplicationContext());
+        mDBAdapter.open();
+
+        TreeMap archives = mDBAdapter.getAllQuotes();
         for (Object entry :
                 archives.descendingKeySet()) {
             String value = archives.get(entry.toString()).toString();
@@ -45,6 +50,7 @@ public class ArchiveActivity extends AppCompatActivity {
             mArchiveLayout.addView(dateTextView);
             mArchiveLayout.addView(recordTextView);
         }
+        mDBAdapter.close();
     }
 
     private String prettifyDate(String dateToParse){
@@ -61,7 +67,7 @@ public class ArchiveActivity extends AppCompatActivity {
     }
 
     public void clearArchives(View view) {
-        MainActivity.mArchives.edit().clear().apply();
+
         mArchiveLayout.removeAllViews();
 
     }
