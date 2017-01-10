@@ -35,14 +35,27 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mSettingsButton;
     private String mQuote;
 
+    public SharedPreferences mPreferences;
     public DBAdapter mDBAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        mPreferences = getPreferences(0);
+        String visibilitySettings = mPreferences.getString("visibility", "");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupViewReferences();
+        if(visibilitySettings.equals("hidden")){
+            mArchivesButton.setVisibility(View.INVISIBLE);
+            mThemeButton.setVisibility(View.INVISIBLE);
+            mVisibilityButton.setImageResource(R.drawable.ic_show_button);
+        } else {
+            mArchivesButton.setVisibility(View.VISIBLE);
+            mThemeButton.setVisibility(View.VISIBLE);
+            mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
+        }
         changeTheme(R.style.BloodRaven);
 
         mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
@@ -79,10 +92,12 @@ public class MainActivity extends AppCompatActivity {
             mArchivesButton.setVisibility(View.INVISIBLE);
             mThemeButton.setVisibility(View.INVISIBLE);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
+            mPreferences.edit().remove("visibility").putString("visibility", "hidden").apply();
         } else {
             mArchivesButton.setVisibility(View.VISIBLE);
             mThemeButton.setVisibility(View.VISIBLE);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
+            mPreferences.edit().remove("visibility").putString("visibility", "visible").apply();
         }
     }
 

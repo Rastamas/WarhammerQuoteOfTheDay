@@ -30,8 +30,9 @@ public class ArchiveActivity extends AppCompatActivity {
 
         mDBAdapter = new DBAdapter(getApplicationContext());
         mDBAdapter.open();
-
         TreeMap archives = mDBAdapter.getAllQuotes();
+        mDBAdapter.close();
+
         for (Object entry :
                 archives.descendingKeySet()) {
             String value = archives.get(entry.toString()).toString();
@@ -50,7 +51,6 @@ public class ArchiveActivity extends AppCompatActivity {
             mArchiveLayout.addView(dateTextView);
             mArchiveLayout.addView(recordTextView);
         }
-        mDBAdapter.close();
     }
 
     private String prettifyDate(String dateToParse){
