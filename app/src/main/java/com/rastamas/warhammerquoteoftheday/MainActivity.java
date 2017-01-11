@@ -41,21 +41,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        mPreferences = getPreferences(0);
-        String visibilitySettings = mPreferences.getString("visibility", "");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupViewReferences();
-        if(visibilitySettings.equals("hidden")){
-            mArchivesButton.setVisibility(View.INVISIBLE);
-            mThemeButton.setVisibility(View.INVISIBLE);
-            mVisibilityButton.setImageResource(R.drawable.ic_show_button);
-        } else {
-            mArchivesButton.setVisibility(View.VISIBLE);
-            mThemeButton.setVisibility(View.VISIBLE);
-            mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
-        }
+        processPreferences();
         changeTheme(R.style.BloodRaven);
 
         mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
@@ -65,6 +54,23 @@ public class MainActivity extends AppCompatActivity {
         mDBAdapter = new DBAdapter(getApplicationContext());
 
         new GetQuoteTask().execute();
+    }
+
+    private void processPreferences() {
+        mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
+
+        String visibilitySettings = mPreferences.getString("visibility", "");
+        if(visibilitySettings.equals("hidden")){
+            mArchivesButton.setVisibility(View.INVISIBLE);
+            mThemeButton.setVisibility(View.INVISIBLE);
+            mVisibilityButton.setImageResource(R.drawable.ic_show_button);
+        } else {
+            mArchivesButton.setVisibility(View.VISIBLE);
+            mThemeButton.setVisibility(View.VISIBLE);
+            mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
+        }
+
+        String dateFormatSettings = mPreferences.getString("dateFormat", "");
     }
 
 
@@ -88,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleVisibility(View view){
+        if(mPreferences.getString("visibility", "").equals(""))
+            mPreferences.edit().putString("visibility", "visible").apply();
         if(mArchivesButton.getVisibility() == View.VISIBLE){
             mArchivesButton.setVisibility(View.INVISIBLE);
             mThemeButton.setVisibility(View.INVISIBLE);
@@ -110,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             mDBAdapter.open();
             String prevQuote = mDBAdapter.getQuote(key);
             mDBAdapter.close();
-            if(mQuote.equals(prevQuote)){
+            if(!mQuote.equals(prevQuote)){
                 archiveQuote();
             }
         } else {

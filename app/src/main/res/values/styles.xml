@@ -37,13 +37,23 @@
         <item name="android:paddingEnd">15dp</item>
     </style>
 
-    <style name="WarhammerTextView">
+    <style name="QuoteTextView">
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">32sp</item>
         <item name="android:shadowDx">3</item>
         <item name="android:shadowDy">3</item>
         <item name="android:shadowRadius">5</item>
         <item name="android:shadowColor">#000000</item>
+    </style>
+
+    <style name="SettingsTextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/bloodRavenAccent</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>
