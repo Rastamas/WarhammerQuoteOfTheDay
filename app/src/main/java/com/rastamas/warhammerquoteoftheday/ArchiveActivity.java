@@ -68,12 +68,24 @@ public class ArchiveActivity extends AppCompatActivity {
         cal.setTime(date);
 
         if(mPreferences.getString("dateFormat", "").equals("imperial")){
-            return "0 " +
-                    (int) ((float)cal.get(Calendar.DAY_OF_YEAR) / (365 + ((cal.get(Calendar.YEAR) % 4) == 0 ? 1 : 0)) * 1000)+
-                    " " + cal.get(Calendar.YEAR) % 1000 +
-                    ".M" + cal.get(Calendar.YEAR) / 1000;
+            return convertStandardToImperial(cal);
         }
         return cal.get(Calendar.YEAR) + " - " + (cal.get(Calendar.MONTH) + 1) + " - " + cal.get(Calendar.DAY_OF_MONTH);
+    }
+
+    private String convertStandardToImperial(Calendar cal){
+        String checkNumber = "0 ";
+        int yearFraction = (int) ((float)cal.get(Calendar.DAY_OF_YEAR) / (365 + ((cal.get(Calendar.YEAR) % 4) == 0 ? 1 : 0)) * 1000);
+        String year = " " + cal.get(Calendar.YEAR) % 1000 + ".M" + (1 + cal.get(Calendar.YEAR) / 1000);
+
+        return checkNumber + fillWithZeroes(yearFraction) + year;
+    }
+
+    private String fillWithZeroes(int i){
+        String returnString = "" + i;
+        if (i < 10) returnString = "0" + returnString;
+        if (i < 100) returnString = "0" + returnString;
+        return returnString;
     }
 
     public void clearArchives(View view) {
