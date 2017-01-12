@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mVisibilityButton;
     private ImageButton mSettingsButton;
     private String mQuote;
+    private String dateKey;
 
     public SharedPreferences mPreferences;
     public DBAdapter mDBAdapter;
@@ -52,8 +53,16 @@ public class MainActivity extends AppCompatActivity {
         setupFonts();
 
         mDBAdapter = new DBAdapter(getApplicationContext());
+        dateKey = createTodaysDateKey();
 
         new GetQuoteTask().execute();
+    }
+
+    private String createTodaysDateKey() {
+        Date today = new Date();
+        String[] dateStringParts = today.toString().split(" ");
+        //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
+        return dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
     }
 
     private void processPreferences() {
@@ -114,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
             Date yesterday = new Date(new Date().getTime() - 24 * 3600 * 1000);
             String[] dateStringParts = yesterday.toString().split(" ");
             //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
-            String key = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
+            String yesterdayskey = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
             mDBAdapter.open();
-            String prevQuote = mDBAdapter.getQuote(key);
+            String prevQuote = mDBAdapter.getQuote(yesterdayskey);
             mDBAdapter.close();
             if(!mQuote.equals(prevQuote)){
                 archiveQuote();
@@ -137,13 +146,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void archiveQuote() {
-        Date today = new Date();
-        String[] dateStringParts = today.toString().split(" ");
-        //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
-        String key = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
-
         mDBAdapter.open();
-        mDBAdapter.putQuote(key, mQuote);
+        mDBAdapter.putQuote(dateKey, mQuote);
         mDBAdapter.close();
     }
 
@@ -187,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor");
+                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/" + dateKey);
                 HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
