@@ -12,6 +12,7 @@
         <item name="android:textColorSecondary">@color/bloodRavenAccent</item>
         <item name="android:textColorSecondaryInverse">@color/bloodRavenAccent</item>
         <item name="android:colorForeground">@android:color/background_dark</item>
+        <item name="android:datePickerDialogTheme">@style/DatePickerDialogTheme</item>
     </style>
     <style name="Eldar1" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/eldar1Primary</item>
@@ -33,8 +34,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:paddingStart">15dp</item>
-        <item name="android:paddingEnd">15dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
     </style>
 
     <style name="QuoteTextView">
@@ -54,6 +55,15 @@
         <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="DatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">@color/bloodRavenPrimary</item>
+        <!--<item name="android:datePickerStyle">@style/DatePickerStyle</item>>-->
+    </style>
+
+    <style name="DatePickerStyle" parent="android:Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">@color/bloodRavenPrimary</item>
     </style>
 
 </resources>

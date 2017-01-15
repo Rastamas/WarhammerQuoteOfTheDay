@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mDBAdapter = new DBAdapter(getApplicationContext());
         dateKey = createTodaysDateKey();
 
-        new GetQuoteTask().execute();
+        new GetMainQuoteTask().execute(dateKey);
     }
 
     private String createTodaysDateKey() {
@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
             mThemeButton.setVisibility(View.VISIBLE);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
         }
-
-        String dateFormatSettings = mPreferences.getString("dateFormat", "");
     }
 
 
@@ -157,9 +155,10 @@ public class MainActivity extends AppCompatActivity {
             mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
             Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
             Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage, 600, 200, true);
+            Bitmap topImage = Bitmap.createScaledBitmap(originalImage, 530, 200, true);
             mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
-            mArchivesButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
-            mThemeButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
+            mArchivesButton.setBackground(new BitmapDrawable(getResources(), topImage));
+            mThemeButton.setBackground(new BitmapDrawable(getResources(), topImage));
             mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
         }
 
@@ -173,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     public void backgroundButtonOnClick(View view) {
         switch(backgroundID) {
             case 0 :
-                mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background2));
+                mainLayout.setBackground(getDrawable(R.drawable.death_watch));
                 backgroundID++;
                 break;
             case 1 :
@@ -187,36 +186,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    class GetQuoteTask extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... voids) {
-            try {
-                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/" + dateKey);
-                HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String quote = bufferedReader.readLine();
-                    bufferedReader.close();
-                    urlConnection.disconnect();
-                    return quote;
-                } finally {
-                    urlConnection.disconnect();
-                }
-            } catch (Exception e) {
-                Log.e("Error with api request!", e.getMessage(), e);
-                return null;
-            }
-        }
+    private class GetMainQuoteTask extends GetQuoteTask {
 
         @Override
         public void onPostExecute(String response) {
+
             if (response == null) {
                 mQuote = null;
                 return;
             }
             Log.i("INFO", response);
-            mQuote = response.replaceAll("^\"|\"$", "");
+            mQuote = response.split("#")[1].replaceAll("^\"|\"$", "");
             mQuoteTextView.setText(mQuote);
+
         }
 
     }

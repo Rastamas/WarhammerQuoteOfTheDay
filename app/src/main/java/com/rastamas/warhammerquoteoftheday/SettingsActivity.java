@@ -4,8 +4,6 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -32,9 +30,9 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 String dateFormat = isChecked ? "imperial" : "standard";
                     if(mPreferences.getString("dateFormat", "").equals(""))
-                        mPreferences.edit().putString("dateFormat", dateFormat).commit();
+                        mPreferences.edit().putString("dateFormat", dateFormat).apply();
                     else
-                        mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).commit();
+                        mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
             }
         });
     }

@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="2dip" />
-            <gradient android:startColor="#AE2500" android:endColor="#BF4623" android:angle="-90"/>
-            <stroke android:width="8px" android:color="#3e2819" />
-        </shape>
+    <item android:state_pressed="true" android:drawable="@drawable/bloodraven_button_dark">
     </item>
-    <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="2dip" />
-            <solid android:color="@color/bloodRavenPrimary" />
-        </shape>
+    <item android:state_focused="true" android:drawable="@drawable/bloodraven_button">
     </item>
-    <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="2dip" />
-            <gradient android:startColor="@color/bloodRavenPrimary" android:endColor="#FF8740" android:angle="-90" />
-            <stroke android:width="8px" android:color="#3e2819" />
-        </shape>
+    <item android:drawable="@drawable/bloodraven_button">
     </item>
 </selector>
