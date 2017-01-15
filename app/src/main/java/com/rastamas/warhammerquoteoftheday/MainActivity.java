@@ -70,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
 
         String visibilitySettings = mPreferences.getString("visibility", "");
         if(visibilitySettings.equals("hidden")){
-            mArchivesButton.setVisibility(View.INVISIBLE);
-            mThemeButton.setVisibility(View.INVISIBLE);
+            mArchivesButton.setAlpha(0.0f);
+            mThemeButton.setAlpha(0.0f);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
         } else {
-            mArchivesButton.setVisibility(View.VISIBLE);
-            mThemeButton.setVisibility(View.VISIBLE);
+            mArchivesButton.setAlpha(1.0f);
+            mThemeButton.setAlpha(1.0f);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
         }
     }
@@ -103,14 +103,14 @@ public class MainActivity extends AppCompatActivity {
     public void toggleVisibility(View view){
         if(mPreferences.getString("visibility", "").equals(""))
             mPreferences.edit().putString("visibility", "visible").apply();
-        if(mArchivesButton.getVisibility() == View.VISIBLE){
-            mArchivesButton.setVisibility(View.INVISIBLE);
-            mThemeButton.setVisibility(View.INVISIBLE);
+        if(mArchivesButton.getAlpha() > 0.0f){
+            mArchivesButton.animate().alpha(0.0f).setDuration(1000);
+            mThemeButton.animate().alpha(0.0f).setDuration(1000);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
             mPreferences.edit().remove("visibility").putString("visibility", "hidden").apply();
         } else {
-            mArchivesButton.setVisibility(View.VISIBLE);
-            mThemeButton.setVisibility(View.VISIBLE);
+            mArchivesButton.animate().alpha(1.0f).setDuration(1000);
+            mThemeButton.animate().alpha(1.0f).setDuration(1000);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
             mPreferences.edit().remove("visibility").putString("visibility", "visible").apply();
         }
