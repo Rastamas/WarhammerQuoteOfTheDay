@@ -48,11 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
         dateFormatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                String dateFormat = isChecked ? "imperial" : "standard";
-                if(mPreferences.getString("dateFormat", "").equals(""))
-                    mPreferences.edit().putString("dateFormat", dateFormat).apply();
-                else
-                    mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
+                mPreferences.edit().remove("showTopButtons").putBoolean("showTopButtons", isChecked).apply();
             }
         });
     }

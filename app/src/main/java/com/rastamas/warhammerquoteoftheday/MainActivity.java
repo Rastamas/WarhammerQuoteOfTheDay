@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private void processPreferences() {
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
 
-        String visibilitySettings = mPreferences.getString("visibility", "");
-        if (visibilitySettings.equals("hidden")) {
+
+        if (!mPreferences.getBoolean("showTopButtons", true)) {
             mArchivesButton.setAlpha(0.0f);
             mThemeButton.setAlpha(0.0f);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
@@ -118,18 +118,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleVisibility(View view) {
-        if (mPreferences.getString("visibility", "").equals(""))
-            mPreferences.edit().putString("visibility", "visible").apply();
         if (mArchivesButton.getAlpha() > 0.0f) {
             mArchivesButton.animate().alpha(0.0f).setDuration(1000);
             mThemeButton.animate().alpha(0.0f).setDuration(1000);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
-            mPreferences.edit().remove("visibility").putString("visibility", "hidden").apply();
+            mPreferences.edit().putBoolean("showTopButtons", false).apply();
         } else {
             mArchivesButton.animate().alpha(1.0f).setDuration(1000);
             mThemeButton.animate().alpha(1.0f).setDuration(1000);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
-            mPreferences.edit().remove("visibility").putString("visibility", "visible").apply();
+            mPreferences.edit().putBoolean("showTopButtons", true).apply();
         }
     }
 
