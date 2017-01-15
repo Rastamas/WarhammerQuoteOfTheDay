@@ -2,9 +2,12 @@ package com.rastamas.warhammerquoteoftheday;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -12,7 +15,7 @@ import java.net.URL;
  * Created by Rasta on 1/15/2017.
  */
 
-public class GetQuoteTask extends AsyncTask<String, Void, String> {
+class GetQuoteTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... keys) {
@@ -25,7 +28,16 @@ public class GetQuoteTask extends AsyncTask<String, Void, String> {
                     bufferedReader.close();
                     urlConnection.disconnect();
                     return keys[0] + "#" + quote;
-                } finally {
+                } catch (ConnectException e){
+                    Log.d("Error: ", e.getMessage());
+                    return "%Network error!";
+                } catch (FileNotFoundException e) {
+                    Log.d("Error: ", e.getMessage());
+                    return "%Missing quote!";
+                } catch (Exception e) {
+                    return "%";
+                }
+                finally {
                     urlConnection.disconnect();
                 }
             } catch (Exception e) {

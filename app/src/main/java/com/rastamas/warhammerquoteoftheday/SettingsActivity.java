@@ -22,17 +22,21 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setTitle("Settings");
         setSupportActionBar(toolbar);
 
+        setupDateFormatControl();
 
+    }
+
+    private void setupDateFormatControl() {
         Switch dateFormatSwitch = (Switch) findViewById(R.id.switch_dateformat);
         dateFormatSwitch.setChecked(mPreferences.getString("dateFormat", "").equals("imperial"));
         dateFormatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 String dateFormat = isChecked ? "imperial" : "standard";
-                    if(mPreferences.getString("dateFormat", "").equals(""))
-                        mPreferences.edit().putString("dateFormat", dateFormat).apply();
-                    else
-                        mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
+                if(mPreferences.getString("dateFormat", "").equals(""))
+                    mPreferences.edit().putString("dateFormat", dateFormat).apply();
+                else
+                    mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
             }
         });
     }

@@ -14,7 +14,7 @@
 
     <Button
         android:id="@+id/button_change_theme"
-        android:text="Background"
+        android:text="@string/background_button_text"
         android:onClick="backgroundButtonOnClick"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
@@ -22,7 +22,7 @@
         />
     <Button
         android:id="@+id/button_archives"
-        android:text="Archives"
+        android:text="@string/archives_button_text"
         android:onClick="archivesButtonOnClick"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"

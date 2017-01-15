@@ -22,11 +22,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="10"
-        android:paddingEnd="8dp">
+        android:paddingEnd="8dp"
+        android:paddingStart="0dp">
     <TextView
         android:id="@+id/textview_dateformat"
         style="@style/SettingsTextView"
-        android:text="Use Imperial Date Format"
+        android:text="@string/use_imperial_date_format"
         android:layout_weight="7"
         />
 

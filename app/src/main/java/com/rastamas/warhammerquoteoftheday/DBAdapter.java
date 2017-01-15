@@ -20,13 +20,15 @@ public class DBAdapter {
     private static final String DATABASE_NAME = "quotedb";
     private static final int DATABASE_VERSION = 1;
 
-    private static final String DATABASE_CREATE = "create table if not exists quotes (date string primary key , "
-            + "quote TEXT" + ");";
+    private static final String DATABASE_CREATE = "create table if not exists quotes (" +
+            "date string primary key," +
+            "quote TEXT" +
+            ");";
 
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
-    public DBAdapter(Context ctx){
+    DBAdapter(Context ctx){
         this.mContext = ctx;
     }
 
@@ -36,22 +38,25 @@ public class DBAdapter {
         return this;
     }
 
-    public void close(){
+    void close(){
         mDbHelper.close();
     }
 
-    public String getQuote(String key){
+    String getQuote(String key){
         Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = '" + key + "'", null, null, null, null);
         String quote = "";
-        if (cursor != null && cursor.moveToFirst()) quote = cursor.getString(0);
+        if (cursor != null && cursor.moveToFirst()) {
+            quote = cursor.getString(0);
+            cursor.close();
+        }
         return quote;
     }
 
-    public void putQuote(String date, String quote){
+    void putQuote(String date, String quote){
         mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES('" + date + "','" + quote + "')");
     }
 
-    public TreeMap<String,String> getAllQuotes(){
+    TreeMap<String,String> getAllQuotes(){
         Cursor cursor = mDb.rawQuery("SELECT date, quote FROM quotes;", null); //mDb.query("quotes", new String[] {"date", "qoute"}, null, null, null, null, null);
 
         TreeMap<String, String> quotes = new TreeMap<>();
@@ -69,7 +74,7 @@ public class DBAdapter {
         return quotes;
     }
 
-    public void clearQuotes(){
+    void clearQuotes(){
         mDb.execSQL("DELETE FROM quotes;");
     }
 

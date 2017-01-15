@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +14,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 
 
@@ -44,23 +40,20 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupViewReferences();
+
+        setupReferences();
+        dateKey = createDateKey(new Date());
+        new GetMainQuoteTask().execute(dateKey);
+
         processPreferences();
         changeTheme(R.style.BloodRaven);
-
-        mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
-        mSettingsButton.setImageResource(R.drawable.ic_settings);
         setupFonts();
 
-        mDBAdapter = new DBAdapter(getApplicationContext());
-        dateKey = createTodaysDateKey();
-
-        new GetMainQuoteTask().execute(dateKey);
+        mSettingsButton.setImageResource(R.drawable.ic_settings);
     }
 
-    private String createTodaysDateKey() {
-        Date today = new Date();
-        String[] dateStringParts = today.toString().split(" ");
+    public static String createDateKey(Date date) {
+        String[] dateStringParts = date.toString().split(" ");
         //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
         return dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
     }
@@ -69,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
 
         String visibilitySettings = mPreferences.getString("visibility", "");
-        if(visibilitySettings.equals("hidden")){
+        if (visibilitySettings.equals("hidden")) {
             mArchivesButton.setAlpha(0.0f);
             mThemeButton.setAlpha(0.0f);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
@@ -81,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setupViewReferences() {
+    private void setupReferences() {
         mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
         mQuoteTextView = (TextView) findViewById(R.id.textview_quote);
         mThemeButton = (Button) findViewById(R.id.button_change_theme);
@@ -89,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         mArchivesButton = (Button) findViewById(R.id.button_archives);
         mVisibilityButton = (ImageButton) findViewById(R.id.button_visibility);
         mSettingsButton = (ImageButton) findViewById(R.id.button_settings);
+        mDBAdapter = new DBAdapter(getApplicationContext());
     }
 
     private void setupFonts() {
@@ -100,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void toggleVisibility(View view){
-        if(mPreferences.getString("visibility", "").equals(""))
+    public void toggleVisibility(View view) {
+        if (mPreferences.getString("visibility", "").equals(""))
             mPreferences.edit().putString("visibility", "visible").apply();
-        if(mArchivesButton.getAlpha() > 0.0f){
+        if (mArchivesButton.getAlpha() > 0.0f) {
             mArchivesButton.animate().alpha(0.0f).setDuration(1000);
             mThemeButton.animate().alpha(0.0f).setDuration(1000);
             mVisibilityButton.setImageResource(R.drawable.ic_show_button);
@@ -118,18 +112,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void toggleQuote(View view) {
         if (mQuote != null) {
-            Date yesterday = new Date(new Date().getTime() - 24 * 3600 * 1000);
-            String[] dateStringParts = yesterday.toString().split(" ");
-            //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
-            String yesterdayskey = dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
+            String yesterdaysKey = createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
             mDBAdapter.open();
-            String prevQuote = mDBAdapter.getQuote(yesterdayskey);
+            String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
             mDBAdapter.close();
-            if(!mQuote.equals(prevQuote)){
+            if (!mQuote.equals(prevQuote)) {
                 archiveQuote();
             }
         } else {
-            new GetQuoteTask().execute();
+            new GetMainQuoteTask().execute(dateKey);
             //contactDeveloper();
         }
         if (mQuoteTextView.getAlpha() == 0.0f) {
@@ -170,16 +161,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void backgroundButtonOnClick(View view) {
-        switch(backgroundID) {
-            case 0 :
+        switch (backgroundID) {
+            case 0:
                 mainLayout.setBackground(getDrawable(R.drawable.death_watch));
                 backgroundID++;
                 break;
-            case 1 :
+            case 1:
                 mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
                 backgroundID = 0;
                 break;
-    }}
+        }
+    }
 
     public void buttonSettingsOnClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
@@ -191,15 +183,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPostExecute(String response) {
 
-            if (response == null) {
+            if (response.contains("%")) {
                 mQuote = null;
+                Toast.makeText(MainActivity.this, response.replace("%", ""), Toast.LENGTH_SHORT).show();
                 return;
             }
             Log.i("INFO", response);
             mQuote = response.split("#")[1].replaceAll("^\"|\"$", "");
             mQuoteTextView.setText(mQuote);
-
         }
-
     }
 }

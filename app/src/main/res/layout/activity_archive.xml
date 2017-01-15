@@ -19,8 +19,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/archive_list_liner_layout"
-        android:orientation="vertical"></LinearLayout>
+        android:id="@+id/archive_list_linear_layout"
+        android:orientation="vertical" />
     </ScrollView>
 
     <Button
@@ -29,7 +29,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:onClick="getArchivesButtonOnClick"
-        android:text="Fill archives"
+        android:text="@string/fill_archives_button_text"
         />
 
     <Button

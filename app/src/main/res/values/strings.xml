@@ -77,4 +77,8 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="settings_button_desc">Go to settings</string>
+    <string name="use_imperial_date_format">Use Imperial Date Format</string>
+    <string name="archives_button_text">Archives</string>
+    <string name="background_button_text">Background</string>
+    <string name="fill_archives_button_text">Fill archives</string>
 </resources>
