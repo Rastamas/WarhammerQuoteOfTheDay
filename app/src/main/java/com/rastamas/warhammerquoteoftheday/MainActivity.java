@@ -16,6 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.Date;
 
 
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public SharedPreferences mPreferences;
     public DBAdapter mDBAdapter;
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -48,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         processPreferences();
         changeTheme(R.style.BloodRaven);
         setupFonts();
-
         mSettingsButton.setImageResource(R.drawable.ic_settings);
     }
 
@@ -71,6 +75,24 @@ public class MainActivity extends AppCompatActivity {
             mThemeButton.setAlpha(1.0f);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
         }
+
+        boolean showAds = mPreferences.getBoolean("showAds", true);
+        mAdView.setVisibility(showAds ? View.VISIBLE : View.INVISIBLE);
+
+        RelativeLayout mainBottom = (RelativeLayout) findViewById(R.id.main_bottom_buttons);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mainBottom.getLayoutParams();
+        if(showAds){
+            params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            params.addRule(RelativeLayout.ABOVE, R.id.adView);
+
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
+        else{
+            params.removeRule(RelativeLayout.ABOVE);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
+        mainBottom.setLayoutParams(params);
     }
 
 
@@ -83,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         mVisibilityButton = (ImageButton) findViewById(R.id.button_visibility);
         mSettingsButton = (ImageButton) findViewById(R.id.button_settings);
         mDBAdapter = new DBAdapter(getApplicationContext());
+        mAdView = (AdView) findViewById(R.id.adView);
     }
 
     private void setupFonts() {
@@ -193,4 +216,5 @@ public class MainActivity extends AppCompatActivity {
             mQuoteTextView.setText(mQuote);
         }
     }
+
 }

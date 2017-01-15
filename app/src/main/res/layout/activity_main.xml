@@ -1,72 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bloodRavenPrimaryDark"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/bloodRavenPrimaryDark"
-
     tools:context="com.rastamas.warhammerquoteoftheday.MainActivity">
 
     <Button
         android:id="@+id/button_change_theme"
-        android:text="@string/background_button_text"
-        android:onClick="backgroundButtonOnClick"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
         style="@style/WarHammerButton"
-        />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:onClick="backgroundButtonOnClick"
+        android:text="@string/background_button_text" />
+
     <Button
         android:id="@+id/button_archives"
-        android:text="@string/archives_button_text"
-        android:onClick="archivesButtonOnClick"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
         style="@style/WarHammerButton"
-        />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:onClick="archivesButtonOnClick"
+        android:text="@string/archives_button_text" />
 
     <TextView
         android:id="@+id/textview_quote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:alpha="0"
         style="@style/QuoteTextView"
-        />
-    <ImageButton
-        android:id="@+id/button_visibility"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="toggleVisibility"
-        android:background="@null"
-        android:alpha="0.6"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:contentDescription="@string/hide_show_top_buttons"/>
-    <Button
-        android:id="@+id/button_toggle_quote"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="@string/bloodraven_raven_toggle"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:onClick="toggleQuote"
-        style="@style/WarHammerButton"
-        />
+        android:layout_centerVertical="true"
+        android:alpha="0" />
 
-    <ImageButton
-        android:id="@+id/button_settings"
+    <RelativeLayout
+        android:id="@+id/main_bottom_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/adView"
+        android:paddingBottom="16dp">
+
+        <ImageButton
+            android:id="@+id/button_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:alpha="0.6"
+            android:background="@null"
+            android:contentDescription="@string/hide_show_top_buttons"
+            android:onClick="toggleVisibility"/>
+
+        <Button
+            android:id="@+id/button_toggle_quote"
+            style="@style/WarHammerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:onClick="toggleQuote"
+            android:text="@string/bloodraven_raven_toggle" />
+
+        <ImageButton
+            android:id="@+id/button_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:alpha="0.6"
+            android:background="@null"
+            android:contentDescription="@string/settings_button_desc"
+            android:onClick="buttonSettingsOnClick"/>
+    </RelativeLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="buttonSettingsOnClick"
-        android:background="@null"
-        android:alpha="0.6"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:contentDescription="@string/settings_button_desc"/>
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        />
 </RelativeLayout>

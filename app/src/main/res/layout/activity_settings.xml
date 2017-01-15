@@ -37,4 +37,23 @@
         android:layout_height="wrap_content"
         android:layout_weight="3"/>
     </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:paddingEnd="8dp"
+        android:paddingStart="0dp">
+        <TextView
+            android:id="@+id/textview_ads"
+            style="@style/SettingsTextView"
+            android:text="@string/show_advertisements"
+            android:layout_weight="7"
+            />
+
+        <Switch
+            android:id="@+id/switch_ads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"/>
+    </TableRow>
 </TableLayout>
