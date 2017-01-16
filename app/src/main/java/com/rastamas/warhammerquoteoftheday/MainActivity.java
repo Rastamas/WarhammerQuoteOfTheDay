@@ -188,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
                 backgroundID++;
                 break;
             case 1:
+                mainLayout.setBackground(getDrawable(R.drawable.background3));
+                backgroundID++;
+                break;
+            case 2:
                 mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
                 backgroundID = 0;
                 break;

@@ -1,5 +1,8 @@
 package com.rastamas.warhammerquoteoftheday;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+
+import java.util.Calendar;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -28,6 +33,36 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setupDateFormatControl();
         setupAdControl();
+        setupNotificationControl();
+    }
+
+    private void setupNotificationControl() {
+        Switch notificationSwitch = (Switch) findViewById(R.id.switch_notifications);
+        notificationSwitch.setChecked(mPreferences.getBoolean("notifications", false));
+        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                mPreferences.edit().putBoolean("notifications", isChecked).apply();
+                AlarmManager alarmManager = (AlarmManager)
+                        SettingsActivity.this.getSystemService(SettingsActivity.this.ALARM_SERVICE);
+                Intent intent = new Intent(SettingsActivity.this, AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this,
+                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                if(isChecked){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, 9);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+
+
+
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+                }else{
+                    alarmManager.cancel(pendingIntent);
+                }
+            }
+        });
     }
 
 
@@ -37,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
         adSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                mPreferences.edit().remove("showAds").putBoolean("showAds", isChecked).apply();
+                mPreferences.edit().putBoolean("showAds", isChecked).apply();
             }
         });
     }
@@ -48,7 +83,12 @@ public class SettingsActivity extends AppCompatActivity {
         dateFormatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                mPreferences.edit().remove("showTopButtons").putBoolean("showTopButtons", isChecked).apply();
+                String dateFormat = isChecked ? "imperial" : "standard";
+                if(mPreferences.getString("dateFormat", "").equals(""))
+                    mPreferences.edit().putString("dateFormat", dateFormat).apply();
+                else
+                    mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
+
             }
         });
     }
