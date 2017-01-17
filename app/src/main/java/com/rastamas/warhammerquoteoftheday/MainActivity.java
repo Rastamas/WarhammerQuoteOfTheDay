@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static String createDateKey(Date date) {
         String[] dateStringParts = date.toString().split(" ");
-        //example: "Sun Dec 18 04:54:14 GMT+01:00 2016"
-        return dateStringParts[5] + dateStringParts[1] + dateStringParts[2];
+        //example: "Sun Dec 08 04:54:14 GMT+01:00 2016"
+        return dateStringParts[5] + dateStringParts[1] + dateStringParts[2].replaceFirst("^0", "");
     }
 
     private void processPreferences() {
@@ -81,14 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
         RelativeLayout mainBottom = (RelativeLayout) findViewById(R.id.main_bottom_buttons);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mainBottom.getLayoutParams();
-        if(showAds){
+        if (showAds) {
             params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ABOVE, R.id.adView);
 
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
-        }
-        else{
+        } else {
             params.removeRule(RelativeLayout.ABOVE);
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
