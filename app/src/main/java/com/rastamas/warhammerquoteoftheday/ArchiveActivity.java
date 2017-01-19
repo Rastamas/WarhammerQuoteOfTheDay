@@ -19,11 +19,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class ArchiveActivity extends AppCompatActivity {
 
@@ -103,10 +110,35 @@ public class ArchiveActivity extends AppCompatActivity {
         mDBAdapter.close();
 
         for (Object date :
-                archives.descendingKeySet()) {
-            String quote = archives.get(date.toString()).toString();
+                sortDateStrings(archives.keySet())) {
+            String quote = archives.get(date).toString();
             createNewArchiveEntry(quote, date.toString(), false);
         }
+    }
+
+    private ArrayList<String> sortDateStrings(Set<String> setToSort) {
+        List<Date> convertedSet = new ArrayList<>();
+        for (String date :
+                setToSort) {
+            try {
+                convertedSet.add(new SimpleDateFormat("yyyyMMMdd").parse(date));
+            } catch (ParseException e) {
+                //contact dev
+            }
+        }
+        Collections.sort(convertedSet, new Comparator<Date>() {
+            @Override
+            public int compare(Date date1, Date date2) {
+                return date1.compareTo(date2);
+            }
+        });
+        ArrayList<String> stringSet = new ArrayList<>();
+        for (Date date :
+                convertedSet) {
+            stringSet.add(MainActivity.createDateKey(date));
+        }
+        Collections.reverse(stringSet);
+        return stringSet;
     }
 
     private void createNewArchiveEntry(String quote, String date, boolean fadeIn) {
