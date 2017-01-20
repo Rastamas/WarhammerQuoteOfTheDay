@@ -65,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
     private void processPreferences() {
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
 
+        processVisibilityPreferences();
+        processAdPreferences();
+    }
 
+    private void processVisibilityPreferences() {
         if (!mPreferences.getBoolean("showTopButtons", true)) {
             mArchivesButton.setAlpha(0.0f);
             mThemeButton.setAlpha(0.0f);
@@ -75,7 +79,9 @@ public class MainActivity extends AppCompatActivity {
             mThemeButton.setAlpha(1.0f);
             mVisibilityButton.setImageResource(R.drawable.ic_hide_button);
         }
+    }
 
+    private void processAdPreferences() {
         boolean showAds = mPreferences.getBoolean("showAds", true);
         mAdView.setVisibility(showAds ? View.VISIBLE : View.INVISIBLE);
 
