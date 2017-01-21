@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -47,19 +49,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupReferences();
-        dateKey = createDateKey(new Date());
+        dateKey = Helper.createDateKey(new Date());
         new GetMainQuoteTask().execute(dateKey);
 
         processPreferences();
         changeTheme(R.style.BloodRaven);
         setupFonts();
         mSettingsButton.setImageResource(R.drawable.ic_settings);
-    }
-
-    public static String createDateKey(Date date) {
-        String[] dateStringParts = date.toString().split(" ");
-        //example: "Sun Dec 08 04:54:14 GMT+01:00 2016"
-        return dateStringParts[5] + dateStringParts[1] + dateStringParts[2].replaceFirst("^0", "");
     }
 
     private void processPreferences() {
@@ -72,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void processBackGroundPreferences() {
         backgroundID = mPreferences.getInt("backgroundID", 0);
-        if(backgroundID == 0){
+        if (backgroundID == 0) {
             mPreferences.edit().putInt("backgroundID", 0).apply();
         }
         backgroundButtonOnClick(null);
@@ -146,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void toggleQuote(View view) {
         if (mQuote != null) {
-            String yesterdaysKey = createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
+            String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
             mDBAdapter.open();
             String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
             mDBAdapter.close();
@@ -154,18 +150,19 @@ public class MainActivity extends AppCompatActivity {
                 archiveQuote();
             }
         } else {
-            new GetMainQuoteTask().execute(dateKey);
-            //contactDeveloper();
+            if (Helper.isServerAccessible(MainActivity.this)) {
+                new GetMainQuoteTask().execute(dateKey);
+            }
+            else{
+                Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
         if (mQuoteTextView.getAlpha() == 0.0f) {
             mQuoteTextView.animate().alpha(1.0f).setDuration(1000);
         } else {
             mQuoteTextView.animate().alpha(0.0f).setDuration(1000);
         }
-    }
-
-    private void contactDeveloper() {
-        //TODO
     }
 
     private void archiveQuote() {
@@ -177,15 +174,27 @@ public class MainActivity extends AppCompatActivity {
     private void changeTheme(int themeID) {
         setTheme(themeID);
         if (themeID == R.style.BloodRaven) {
-            Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
-            Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage, 600, 200, true);
-            Bitmap topImage = Bitmap.createScaledBitmap(originalImage, 530, 200, true);
-            mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
-            mArchivesButton.setBackground(new BitmapDrawable(getResources(), topImage));
-            mThemeButton.setBackground(new BitmapDrawable(getResources(), topImage));
+            setupButtonImageBackgrounds();
+
             mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
         }
 
+    }
+
+    private void setupButtonImageBackgrounds() {
+        IntTuple dimensions = Helper.getScreenSize(getWindowManager());
+
+        Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
+        Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
+                (int)(1.0f * 500 / 1080 * dimensions.x),
+                (int)(1.0f * 180 / 1920 * dimensions.y), true);
+        Bitmap topImage = Bitmap.createScaledBitmap(originalImage,
+                (int)(1.0f * 400 / 1080 * dimensions.x),
+                (int)(1.0f * 160 / 1920 * dimensions.y), true);
+        //Bitmap topImage = Bitmap.createScaledBitmap(originalImage, 530, 200, true);
+        mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
+        mArchivesButton.setBackground(new BitmapDrawable(getResources(), topImage));
+        mThemeButton.setBackground(new BitmapDrawable(getResources(), topImage));
     }
 
     public void archivesButtonOnClick(View view) {

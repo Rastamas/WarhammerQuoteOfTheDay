@@ -27,10 +27,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class ArchiveActivity extends AppCompatActivity {
 
@@ -55,7 +53,10 @@ public class ArchiveActivity extends AppCompatActivity {
 
     private void setupLookAndFeel() {
         Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
-        Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage, 600, 200, true);
+        IntTuple dimensions = Helper.getScreenSize(getWindowManager());
+        Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
+                (int)(1.0f * 400 / 1080 * dimensions.x),
+                (int)(1.0f * 160 / 1920 * dimensions.y), true);
         Button mGetArchivesButton = (Button) findViewById(R.id.button_getarchives);
         mGetArchivesButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
 
@@ -68,8 +69,8 @@ public class ArchiveActivity extends AppCompatActivity {
         onDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                if (!isServerAccessible()) {
-                    Toast.makeText(ArchiveActivity.this, "Network error!", Toast.LENGTH_SHORT).show();
+                if (!Helper.isServerAccessible(ArchiveActivity.this)) {
+                    Toast.makeText(ArchiveActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Calendar calendar = Calendar.getInstance();
@@ -82,26 +83,14 @@ public class ArchiveActivity extends AppCompatActivity {
         };
     }
 
-    private boolean isServerAccessible() {
-        try {
-            ConnectivityManager connectivityManager =
-                    (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     private void fillArchivesSinceDate(Calendar start) {
         Calendar end = Calendar.getInstance();
         for (Date date = end.getTime(); end.after(start); end.add(Calendar.DATE, -1), date = end.getTime()) {
 
-            String key = MainActivity.createDateKey(date);
+            String key = Helper.createDateKey(date);
             new FillArchiveTask().execute(key);
         }
     }
-
 
     private void loadQuotes() {
         mDBAdapter = new DBAdapter(getApplicationContext());
@@ -116,6 +105,7 @@ public class ArchiveActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private ArrayList<String> sortDateStrings(Set<String> setToSort) {
         List<Date> convertedSet = new ArrayList<>();
         for (String date :
@@ -135,7 +125,7 @@ public class ArchiveActivity extends AppCompatActivity {
         ArrayList<String> stringSet = new ArrayList<>();
         for (Date date :
                 convertedSet) {
-            stringSet.add(MainActivity.createDateKey(date));
+            stringSet.add(Helper.createDateKey(date));
         }
         Collections.reverse(stringSet);
         return stringSet;
