@@ -25,7 +25,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private RelativeLayout mainLayout;
-    private static int backgroundID = 0;
+    private static int backgroundID;
     private TextView mQuoteTextView;
     private Button mToggleButton;
     private Button mThemeButton;
@@ -67,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
 
         processVisibilityPreferences();
         processAdPreferences();
+        processBackGroundPreferences();
+    }
+
+    private void processBackGroundPreferences() {
+        backgroundID = mPreferences.getInt("backgroundID", 0);
+        if(backgroundID == 0){
+            mPreferences.edit().putInt("backgroundID", 0).apply();
+        }
+        backgroundButtonOnClick(null);
     }
 
     private void processVisibilityPreferences() {
@@ -99,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         }
         mainBottom.setLayoutParams(params);
     }
-
 
     private void setupReferences() {
         mainLayout = (RelativeLayout) findViewById(R.id.activity_main);
@@ -169,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
     private void changeTheme(int themeID) {
         setTheme(themeID);
         if (themeID == R.style.BloodRaven) {
-            mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
             Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
             Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage, 600, 200, true);
             Bitmap topImage = Bitmap.createScaledBitmap(originalImage, 530, 200, true);
@@ -187,17 +194,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void backgroundButtonOnClick(View view) {
+        mPreferences.edit().putInt("backgroundID", backgroundID).apply();
         switch (backgroundID) {
             case 0:
-                mainLayout.setBackground(getDrawable(R.drawable.death_watch));
+                mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
                 backgroundID++;
                 break;
             case 1:
-                mainLayout.setBackground(getDrawable(R.drawable.background3));
+                mainLayout.setBackground(getDrawable(R.drawable.death_watch));
                 backgroundID++;
                 break;
             case 2:
-                mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
+                mainLayout.setBackground(getDrawable(R.drawable.background3));
                 backgroundID = 0;
                 break;
         }
