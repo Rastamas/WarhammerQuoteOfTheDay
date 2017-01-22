@@ -53,11 +53,11 @@ public class DBAdapter {
     }
 
     void putQuote(String date, String quote){
-        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES('" + date + "','" + quote + "')");
+        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES(?,?)", new String[]{date, quote});
     }
 
     TreeMap<String,String> getAllQuotes(){
-        Cursor cursor = mDb.rawQuery("SELECT date, quote FROM quotes;", null); //mDb.query("quotes", new String[] {"date", "qoute"}, null, null, null, null, null);
+        Cursor cursor = mDb.rawQuery("SELECT date, quote FROM quotes;", null);
 
         TreeMap<String, String> quotes = new TreeMap<>();
         if(cursor != null){
