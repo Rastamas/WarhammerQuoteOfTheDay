@@ -2,6 +2,7 @@ package com.rastamas.warhammerquoteoftheday;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -49,12 +53,15 @@ public class SettingsActivity extends AppCompatActivity {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this,
                         0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 if(isChecked){
+                    setDesiredTime();
+                    int desiredHour = mPreferences.getInt("notificationHour", 9);
+                    int desiredMinute = mPreferences.getInt("notificationMinute", 0);
                     Calendar calendar = Calendar.getInstance();
                     int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-                    calendar.set(Calendar.HOUR_OF_DAY, 9);
-                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.HOUR_OF_DAY, desiredHour);
+                    calendar.set(Calendar.MINUTE, desiredMinute);
                     calendar.set(Calendar.SECOND, 0);
-                    if(currentHour > 9) calendar.add(Calendar.DATE, 1);
+                    if(currentHour > desiredHour) calendar.add(Calendar.DATE, 1);
                     alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
                 }else{
@@ -62,6 +69,33 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void updateTextView(int hour, int minute) {
+        TextView desiredTimeTextView = (TextView) findViewById(R.id.textview_when);
+        String prettyHour = (hour < 10 ? "0" : "") + hour;
+        String prettyMinute = (minute < 10 ? "0" : "") + minute;
+        desiredTimeTextView.setText("At this time: " + prettyHour + ":" + prettyMinute);
+
+    }
+
+    private void setDesiredTime() {
+        TimePickerDialog mDialog;
+        int currentHour = mPreferences.getInt("notificationHour", 9);
+        int currentMinute = mPreferences.getInt("notificationMinute", 0);
+        mDialog = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                mPreferences.edit()
+                        .putInt("notificationHour", hour)
+                        .putInt("notificationMinute", minute)
+                        .apply();
+                updateTextView(hour, minute);
+            }
+        }, currentHour, currentMinute, true);
+        mDialog.setTitle("Set time of notification");
+        mDialog.show();
+
     }
 
 
@@ -87,6 +121,7 @@ public class SettingsActivity extends AppCompatActivity {
                     mPreferences.edit().putString("dateFormat", dateFormat).apply();
                 else
                     mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
+                Toast.makeText(SettingsActivity.this, "Restart application for the changes to take effect", Toast.LENGTH_LONG).show();
 
             }
         });

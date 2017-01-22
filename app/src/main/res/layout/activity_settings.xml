@@ -75,6 +75,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="3"/>
+
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp"
+        android:paddingStart="0dp">
+        <TextView
+            android:id="@+id/textview_when"
+            style="@style/SettingsTextView"
+            android:text="@string/at_this_time"
+            android:paddingStart="32dp"
+            />
+
     </TableRow>
 
 </TableLayout>

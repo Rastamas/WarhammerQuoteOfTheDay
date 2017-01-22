@@ -13,6 +13,7 @@
         <item name="android:textColorSecondaryInverse">@color/bloodRavenAccent</item>
         <item name="android:colorForeground">@android:color/background_dark</item>
         <item name="android:datePickerDialogTheme">@style/DatePickerDialogTheme</item>
+        <item name="android:timePickerDialogTheme">@style/DatePickerDialogTheme</item>
     </style>
     <style name="Eldar1" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/eldar1Primary</item>
