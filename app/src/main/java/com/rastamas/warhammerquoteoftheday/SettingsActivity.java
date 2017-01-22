@@ -50,10 +50,12 @@ public class SettingsActivity extends AppCompatActivity {
                         0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 if(isChecked){
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 59);
+                    int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+                    calendar.set(Calendar.HOUR_OF_DAY, 9);
+                    calendar.set(Calendar.MINUTE, 0);
                     calendar.set(Calendar.SECOND, 0);
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    if(currentHour > 9) calendar.add(Calendar.DATE, 1);
+                    alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
                 }else{
                     alarmManager.cancel(pendingIntent);
