@@ -84,5 +84,5 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="show_advertisements">Show advertisements</string>
     <string name="enable_daily_notifications">Enable daily notifications</string>
-    <string name="at_this_time">At this time:</string>
+    <string name="at_this_time">At this time: </string>
 </resources>

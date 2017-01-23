@@ -1,5 +1,6 @@
 package com.rastamas.warhammerquoteoftheday;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -8,12 +9,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -42,7 +38,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setupNotificationControl() {
         Switch notificationSwitch = (Switch) findViewById(R.id.switch_notifications);
-        notificationSwitch.setChecked(mPreferences.getBoolean("notifications", false));
+        boolean notificationsEnabled = mPreferences.getBoolean("notifications", false);
+        notificationSwitch.setChecked(notificationsEnabled);
+        if(notificationsEnabled){
+            updateTextView(mPreferences.getInt("notificationHour", 9),
+                    mPreferences.getInt("notificationMinute", 0));
+        }
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -53,37 +54,59 @@ public class SettingsActivity extends AppCompatActivity {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this,
                         0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 if(isChecked){
-                    setDesiredTime();
-                    int desiredHour = mPreferences.getInt("notificationHour", 9);
-                    int desiredMinute = mPreferences.getInt("notificationMinute", 0);
-                    Calendar calendar = Calendar.getInstance();
-                    int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-                    calendar.set(Calendar.HOUR_OF_DAY, desiredHour);
-                    calendar.set(Calendar.MINUTE, desiredMinute);
-                    calendar.set(Calendar.SECOND, 0);
-                    if(currentHour > desiredHour) calendar.add(Calendar.DATE, 1);
+                    saveDesiredTimeToPreferences();
+                    Calendar calendar = setCalendarForNotification();
+                    if(shouldHaveAlreadyNotified(calendar))
+                        calendar.add(Calendar.DATE, 1);
                     alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
                 }else{
                     alarmManager.cancel(pendingIntent);
+                    updateTextView(-1, -1);
+                    mPreferences.edit()
+                            .remove("notificationHour")
+                            .remove("notificationMinute")
+                            .apply();
                 }
             }
         });
     }
 
+    private boolean shouldHaveAlreadyNotified(Calendar then) {
+        Calendar now = Calendar.getInstance();
+        return now.before(then);
+    }
+
+    private Calendar setCalendarForNotification() {
+        int desiredHour = mPreferences.getInt("notificationHour", 9);
+        int desiredMinute = mPreferences.getInt("notificationMinute", 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, desiredHour);
+        calendar.set(Calendar.MINUTE, desiredMinute);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar;
+    }
+
+    @SuppressLint("SetTextI18n")
     private void updateTextView(int hour, int minute) {
         TextView desiredTimeTextView = (TextView) findViewById(R.id.textview_when);
+        if(hour < 0 || minute < 0){
+            desiredTimeTextView.setText("At this time: ");
+            return;
+        }
         String prettyHour = (hour < 10 ? "0" : "") + hour;
         String prettyMinute = (minute < 10 ? "0" : "") + minute;
         desiredTimeTextView.setText("At this time: " + prettyHour + ":" + prettyMinute);
 
     }
 
-    private void setDesiredTime() {
+    private void saveDesiredTimeToPreferences() {
         TimePickerDialog mDialog;
         int currentHour = mPreferences.getInt("notificationHour", 9);
         int currentMinute = mPreferences.getInt("notificationMinute", 0);
-        mDialog = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        mDialog = new TimePickerDialog(SettingsActivity.this,
+                new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                 mPreferences.edit()
@@ -106,6 +129,9 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 mPreferences.edit().putBoolean("showAds", isChecked).apply();
+                Toast.makeText(SettingsActivity.this,
+                        "Restart application for the changes to take effect!",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -121,7 +147,6 @@ public class SettingsActivity extends AppCompatActivity {
                     mPreferences.edit().putString("dateFormat", dateFormat).apply();
                 else
                     mPreferences.edit().remove("dateFormat").putString("dateFormat", dateFormat).apply();
-                Toast.makeText(SettingsActivity.this, "Restart application for the changes to take effect", Toast.LENGTH_LONG).show();
 
             }
         });
