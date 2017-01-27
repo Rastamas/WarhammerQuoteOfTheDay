@@ -42,6 +42,15 @@ public class DBAdapter {
         mDbHelper.close();
     }
 
+    boolean quoteExists(String key){
+        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = '" + key + "'", null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
+
     String getQuote(String key){
         Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = '" + key + "'", null, null, null, null);
         String quote = "";
@@ -54,6 +63,10 @@ public class DBAdapter {
 
     void putQuote(String date, String quote){
         mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES(?,?)", new String[]{date, quote});
+    }
+
+    void deleteQuote(String key){
+        mDb.execSQL("DELETE FROM quotes WHERE date=?", new String[] {key});
     }
 
     TreeMap<String,String> getAllQuotes(){
