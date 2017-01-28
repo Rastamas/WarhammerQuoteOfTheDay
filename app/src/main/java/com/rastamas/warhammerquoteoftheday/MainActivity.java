@@ -52,22 +52,23 @@ public class MainActivity extends AppCompatActivity {
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
         setupReferences();
         initTodaysDateKeyAndQuoteId();
+        getQuoteAndSetupTextView();
 
+        processPreferences();
+        setupLookAndFeel();
+        setupFonts();
+    }
+
+    private void getQuoteAndSetupTextView() {
         mDBAdapter.open();
-        if(todaysQuoteIsNotAvailable()){
+        if (todaysQuoteIsAvailable()) {
+            mQuote = mDBAdapter.getQuote(dateKey);
+            mQuoteTextView.setText(mQuote);
+        } else {
             makeSureQuoteIsHidden();
             new GetMainQuoteTask().execute(mQuoteId, dateKey);
         }
-        else {
-            mQuote = mDBAdapter.getQuote(dateKey);
-            mQuoteTextView.setText(mQuote);
-        }
         mDBAdapter.close();
-
-        processPreferences();
-        changeTheme(R.style.BloodRaven);
-        setupFonts();
-        mSettingsButton.setImageResource(R.drawable.ic_settings);
     }
 
     private void makeSureQuoteIsHidden() {
@@ -75,27 +76,26 @@ public class MainActivity extends AppCompatActivity {
         mPreferences.edit().putBoolean("quoteVisible", false).apply();
     }
 
-    private boolean todaysQuoteIsNotAvailable() {
-        return !mDBAdapter.quoteExists(dateKey);
+    private boolean todaysQuoteIsAvailable() {
+        return mDBAdapter.quoteExists(dateKey);
     }
 
     private void processPreferences() {
-
         processVisibilityPreferences();
         processAdPreferences();
         processBackGroundPreferences();
         processQuoteTextSizePreferences();
-        setQuoteVisibility();
+        processQuoteVisibility();
     }
 
-    private void setQuoteVisibility() {
+    private void processQuoteVisibility() {
         boolean quoteIsVisible = mPreferences.getBoolean("quoteVisible", false);
         mQuoteTextView.setAlpha(quoteIsVisible ? 1.0f : 0.0f);
     }
 
     private void processQuoteTextSizePreferences() {
-        if(mQuote == null) return;
-        int quoteTextSize = (int) Math.floor(Math.sqrt(20f / mQuote.length())  * 50); //mPreferences.getInt("quoteTextSize", 32);
+        if (mQuote == null) return;
+        int quoteTextSize = (int) Math.floor(Math.sqrt(20f / mQuote.length()) * 50); //mPreferences.getInt("quoteTextSize", 32);
         mQuoteTextView.setTextSize(quoteTextSize);
     }
 
@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
         mQuoteTextView.setTypeface(custom_font);
         mToggleButton.setTypeface(custom_font);
         mThemeButton.setTypeface(custom_font);
-
     }
 
     public void toggleVisibility(View view) {
@@ -176,22 +175,19 @@ public class MainActivity extends AppCompatActivity {
     public void toggleQuote(View view) {
         if (mQuote != null) {
             processQuoteTextSizePreferences();
-            String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
-            mDBAdapter.open();
-            String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
-            mDBAdapter.close();
-            if (!mQuote.equals(prevQuote)) {
-                archiveQuote();
-            }
+            loadAndArchiveTodaysQuote();
         } else {
             if (Helper.isServerAccessible(MainActivity.this)) {
                 new GetMainQuoteTask().execute(mQuoteId, dateKey);
-            }
-            else{
+            } else {
                 Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
             }
             return;
         }
+        animateQuoteVisibility();
+    }
+
+    private void animateQuoteVisibility() {
         if (mQuoteTextView.getAlpha() == 0.0f) {
             mQuoteTextView.animate().alpha(1.0f).setDuration(1000);
             mPreferences.edit().putBoolean("quoteVisible", true).apply();
@@ -201,24 +197,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void archiveQuote() {
-        try{
+    private void loadAndArchiveTodaysQuote() {
+        String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
         mDBAdapter.open();
-        mDBAdapter.putQuote(dateKey, mQuoteId, mQuote);
-        mDBAdapter.close();}
-        catch (Exception e){
+        String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
+        mDBAdapter.close();
+        if (!mQuote.equals(prevQuote)) {
+            archiveQuote();
+        }
+    }
+
+    private void archiveQuote() {
+        try {
+            mDBAdapter.open();
+            mDBAdapter.putQuote(dateKey, mQuoteId, mQuote);
+            mDBAdapter.close();
+        } catch (Exception e) {
             Log.d("Error", e.getMessage());
         }
     }
 
-    private void changeTheme(int themeID) {
-        setTheme(themeID);
-        if (themeID == R.style.BloodRaven) {
-            setupButtonImageBackgrounds();
-
-            mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
-        }
-
+    private void setupLookAndFeel() {
+        setTheme(R.style.BloodRaven);
+        setupButtonImageBackgrounds();
+        mSettingsButton.setImageResource(R.drawable.ic_settings);
+        mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
     }
 
     private void setupButtonImageBackgrounds() {
@@ -226,12 +229,11 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
         Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
-                (int)(1.0f * 500 / 1080 * dimensions.x),
-                (int)(1.0f * 180 / 1920 * dimensions.y), true);
+                (int) (1.0f * 500 / 1080 * dimensions.x),
+                (int) (1.0f * 180 / 1920 * dimensions.y), true);
         Bitmap topImage = Bitmap.createScaledBitmap(originalImage,
-                (int)(1.0f * 400 / 1080 * dimensions.x),
-                (int)(1.0f * 160 / 1920 * dimensions.y), true);
-        //Bitmap topImage = Bitmap.createScaledBitmap(originalImage, 530, 200, true);
+                (int) (1.0f * 400 / 1080 * dimensions.x),
+                (int) (1.0f * 160 / 1920 * dimensions.y), true);
         mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
         mArchivesButton.setBackground(new BitmapDrawable(getResources(), topImage));
         mThemeButton.setBackground(new BitmapDrawable(getResources(), topImage));
@@ -266,29 +268,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-        if(resultCode == RESULT_OK){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
             Intent refresh = new Intent(this, MainActivity.class);
             startActivity(refresh);
             this.finish();
         }
     }
 
-    public void initTodaysDateKeyAndQuoteId(){
+    private void initTodaysDateKeyAndQuoteId() {
         dateKey = Helper.createDateKey(new Date());
 
         mDBAdapter.open();
-        if(mDBAdapter.quoteExists(dateKey))
-        {
+        if (mDBAdapter.quoteExists(dateKey)) {
             mQuoteId = mDBAdapter.getQuoteId(dateKey);
-        }
-        else
-        {
+        } else {
             Random random = new Random();
             ArrayList<String> previousIds = mDBAdapter.getLastThirtyQuoteIds();
-            do{
-            mQuoteId = "" + random.nextInt(100);
+            do {
+                mQuoteId = "" + random.nextInt(100);
             } while (previousIds.contains(mQuoteId));
         }
         mDBAdapter.close();

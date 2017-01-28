@@ -32,12 +32,20 @@ public class SettingsActivity extends AppCompatActivity {
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
         mNotificationSwitch = (Switch) findViewById(R.id.switch_notifications);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
-        toolbar.setTitle("Settings");
-        setSupportActionBar(toolbar);
+        setupControls();
+    }
+
+    private void setupControls() {
+        setupToolBar();
         setupDateFormatControl();
         setupAdControl();
         setupNotificationControl();
+    }
+
+    private void setupToolBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        toolbar.setTitle("Settings");
+        setSupportActionBar(toolbar);
     }
 
     private void setupNotificationControl() {
@@ -53,12 +61,11 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 AlarmManager alarmManager = (AlarmManager)
                         SettingsActivity.this.getSystemService(ALARM_SERVICE);
-                Intent intent = new Intent(SettingsActivity.this, AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this,
-                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = createPendingIntentForNotification();
+
                 if(isChecked){
                     saveDesiredTimeToPreferences();
-                    Calendar calendar = setCalendarForNotification();
+                    Calendar calendar = setTimeForNotification();
                     if(shouldHaveAlreadyNotified(calendar))
                         calendar.add(Calendar.DATE, 1);
                     alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
@@ -77,12 +84,18 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    private PendingIntent createPendingIntentForNotification() {
+        Intent intent = new Intent(SettingsActivity.this, AlarmReceiver.class);
+        return PendingIntent.getBroadcast(SettingsActivity.this,
+                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
     private boolean shouldHaveAlreadyNotified(Calendar then) {
         Calendar now = Calendar.getInstance();
         return now.before(then);
     }
 
-    private Calendar setCalendarForNotification() {
+    private Calendar setTimeForNotification() {
         int desiredHour = mPreferences.getInt("notificationHour", 9);
         int desiredMinute = mPreferences.getInt("notificationMinute", 0);
 

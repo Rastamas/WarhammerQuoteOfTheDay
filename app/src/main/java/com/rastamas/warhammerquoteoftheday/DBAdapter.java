@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -15,7 +14,7 @@ import java.util.TreeMap;
  * Created by Rasta on 05/01/2017.
  */
 
-public class DBAdapter {
+class DBAdapter {
 
     private final Context mContext;
     private static final String TAG = "QuoteDbAdapter";
@@ -112,7 +111,6 @@ public class DBAdapter {
             }
             cursor.close();
         }
-
         return quotes;
     }
 

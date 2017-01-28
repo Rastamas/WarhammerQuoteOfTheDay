@@ -2,22 +2,17 @@ package com.rastamas.warhammerquoteoftheday;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +31,6 @@ public class ArchiveActivity extends AppCompatActivity {
     private DBAdapter mDBAdapter;
     private SharedPreferences mPreferences;
     private Typeface custom_font;
-    private DatePickerDialog.OnDateSetListener onDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,48 +42,20 @@ public class ArchiveActivity extends AppCompatActivity {
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
 
         loadQuotes();
-        setupOnDateSetListener();
     }
 
     private void setupLookAndFeel() {
         Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
         IntTuple dimensions = Helper.getScreenSize(getWindowManager());
         Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
-                (int)(1.0f * 400 / 1080 * dimensions.x),
-                (int)(1.0f * 160 / 1920 * dimensions.y), true);
+                (int) (1.0f * 400 / 1080 * dimensions.x),
+                (int) (1.0f * 160 / 1920 * dimensions.y), true);
         Button mGetArchivesButton = (Button) findViewById(R.id.button_getarchives);
         mGetArchivesButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
 
         mArchiveLayout = (LinearLayout) findViewById(R.id.archive_list_linear_layout);
         custom_font = Typeface.createFromAsset(getAssets(), "fonts/CaslonAntiqueBold.ttf");
         mGetArchivesButton.setTypeface(custom_font);
-    }
-
-    private void setupOnDateSetListener() {
-        onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                if (!Helper.isServerAccessible(ArchiveActivity.this)) {
-                    Toast.makeText(ArchiveActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                clearArchives(null);
-                fillArchivesSinceDate(calendar);
-            }
-        };
-    }
-
-    private void fillArchivesSinceDate(Calendar start) {
-        Calendar end = Calendar.getInstance();
-        for (Date date = end.getTime(); end.after(start); end.add(Calendar.DATE, -1), date = end.getTime()) {
-
-            String dateKey = Helper.createDateKey(date);
-            new FillArchiveTask().execute("", dateKey);
-        }
     }
 
     private void loadQuotes() {
@@ -101,7 +67,7 @@ public class ArchiveActivity extends AppCompatActivity {
         for (Object date :
                 sortDateStrings(archives.keySet())) {
             String quote = archives.get(date).toString();
-            createNewArchiveEntry(quote, date.toString(), false);
+            createNewArchiveEntry(quote, date.toString(), true);
         }
     }
 
@@ -113,7 +79,7 @@ public class ArchiveActivity extends AppCompatActivity {
             try {
                 convertedSet.add(new SimpleDateFormat("yyyyMMMdd").parse(date));
             } catch (ParseException e) {
-                //contact dev
+                //should not be possible
             }
         }
         Collections.sort(convertedSet, new Comparator<Date>() {
@@ -188,42 +154,10 @@ public class ArchiveActivity extends AppCompatActivity {
     }
 
     public void clearArchives(View view) {
-
         mArchiveLayout.removeAllViews();
         mDBAdapter.open();
         mDBAdapter.clearQuotes();
         mDBAdapter.close();
-
     }
 
-    public void getArchivesButtonOnClick(View view) {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(ArchiveActivity.this, onDateSetListener,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
-
-    }
-
-    private class FillArchiveTask extends GetQuoteTask {
-
-        @Override
-        public void onPostExecute(String response) {
-            String quote;
-            if (response.contains("%")) {
-                Toast.makeText(ArchiveActivity.this, response.replace("%", ""), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String[] responseParts = response.split("#");
-            String dateKey = responseParts[0];
-            String quoteId = responseParts[1];
-            quote = responseParts[2];
-            quote = quote.replaceAll("^\"|\"$", "");
-            createNewArchiveEntry(quote, dateKey, true);
-            mDBAdapter.open();
-            mDBAdapter.putQuote(dateKey, quoteId, quote);
-            mDBAdapter.close();
-        }
-
-    }
 }

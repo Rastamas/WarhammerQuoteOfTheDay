@@ -1,6 +1,5 @@
 package com.rastamas.warhammerquoteoftheday;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
@@ -15,9 +14,6 @@ import java.util.Date;
  */
 
 final class Helper {
-    public static void contactDeveloper() {
-        //TODO
-    }
 
     static IntTuple getScreenSize(WindowManager windowManager){
         Display display = windowManager.getDefaultDisplay();
