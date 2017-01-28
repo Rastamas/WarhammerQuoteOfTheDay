@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
@@ -22,6 +24,7 @@ public class DBAdapter {
 
     private static final String DATABASE_CREATE = "create table if not exists quotes (" +
             "date string primary key," +
+            "quoteid TEXT," +
             "quote TEXT" +
             ");";
 
@@ -42,8 +45,8 @@ public class DBAdapter {
         mDbHelper.close();
     }
 
-    boolean quoteExists(String key){
-        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = '" + key + "'", null, null, null, null);
+    boolean quoteExists(String dateKey){
+        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = ?", new String[] {dateKey}, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             cursor.close();
             return true;
@@ -51,8 +54,8 @@ public class DBAdapter {
         return false;
     }
 
-    String getQuote(String key){
-        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = '" + key + "'", null, null, null, null);
+    String getQuote(String dateKey){
+        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = ?", new String[] {dateKey}, null, null, null);
         String quote = "";
         if (cursor != null && cursor.moveToFirst()) {
             quote = cursor.getString(0);
@@ -61,12 +64,38 @@ public class DBAdapter {
         return quote;
     }
 
-    void putQuote(String date, String quote){
-        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quote) VALUES(?,?)", new String[]{date, quote});
+    void putQuote(String dateKey, String quoteId, String quote){
+        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quoteid, quote) VALUES(?,?,?)", new String[]{dateKey, quoteId, quote});
     }
 
-    void deleteQuote(String key){
-        mDb.execSQL("DELETE FROM quotes WHERE date=?", new String[] {key});
+    void deleteQuote(String dateKey){
+        mDb.execSQL("DELETE FROM quotes WHERE date=?", new String[] {dateKey});
+    }
+
+    String getQuoteId(String dateKey){
+        Cursor cursor = mDb.query("quotes", new String[] {"quoteid"}, "date = ?", new String[] {dateKey}, null, null, null);
+        String quoteid = "";
+        if (cursor != null && cursor.moveToFirst()) {
+            quoteid = cursor.getString(0);
+            cursor.close();
+        }
+        return quoteid;
+    }
+
+    ArrayList<String> getLastThirtyQuoteIds(){
+        ArrayList<String> quoteIds = new ArrayList<>();
+        Cursor cursor = mDb.rawQuery("SELECT quoteid FROM quotes ORDER BY _ROWID_ DESC;", null);
+        int i = 30;
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                do{
+                    quoteIds.add(cursor.getString(cursor.getColumnIndex("quoteid")));
+                    i--;
+                } while (cursor.moveToNext() && i > 0);
+            }
+            cursor.close();
+        }
+        return quoteIds;
     }
 
     TreeMap<String,String> getAllQuotes(){

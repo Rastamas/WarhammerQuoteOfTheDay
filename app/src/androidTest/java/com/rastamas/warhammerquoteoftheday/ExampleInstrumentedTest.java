@@ -30,7 +30,7 @@ public class ExampleInstrumentedTest {
     public void put_get_check_isCorrect() throws Exception{
         DBAdapter mDBAdapter = new DBAdapter(context);
         mDBAdapter.open();
-        mDBAdapter.putQuote("2017Jan25", "Derp");
+        mDBAdapter.putQuote("2017Jan25", "0", "Derp");
         assertTrue(mDBAdapter.quoteExists("2017Jan25"));
         assertEquals("", "Derp", mDBAdapter.getQuote("2017Jan25"));
         mDBAdapter.deleteQuote("2017Jan25");

@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mVisibilityButton;
     private ImageButton mSettingsButton;
     private String mQuote;
+    private String mQuoteId;
     private String dateKey;
 
     public SharedPreferences mPreferences;
@@ -48,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         setupReferences();
         dateKey = Helper.createDateKey(new Date());
-        new GetMainQuoteTask().execute(dateKey);
+        initTodaysQuoteId();
+        new GetMainQuoteTask().execute(mQuoteId, dateKey);
 
         processPreferences();
         changeTheme(R.style.BloodRaven);
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     private void archiveQuote() {
         try{
         mDBAdapter.open();
-        mDBAdapter.putQuote(dateKey, mQuote);
+        mDBAdapter.putQuote(dateKey, mQuoteId, mQuote);
         mDBAdapter.close();}
         catch (Exception e){
             Log.d("Error", e.getMessage());
@@ -227,6 +231,23 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void initTodaysQuoteId(){
+        mDBAdapter.open();
+        if(mDBAdapter.quoteExists(dateKey))
+        {
+            mQuoteId = mDBAdapter.getQuoteId(dateKey);
+        }
+        else
+        {
+            Random random = new Random();
+            ArrayList<String> previousIds = mDBAdapter.getLastThirtyQuoteIds();
+            do{
+            mQuoteId = "" + random.nextInt(100);
+            } while (previousIds.contains(mQuoteId));
+        }
+        mDBAdapter.close();
+    }
+
     private class GetMainQuoteTask extends GetQuoteTask {
 
         @Override
@@ -238,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             Log.i("INFO", response);
-            mQuote = response.split("#")[1].replaceAll("^\"|\"$", "");
+            mQuote = response.split("#")[2].replaceAll("^\"|\"$", "");
             mQuoteTextView.setText(mQuote);
         }
     }

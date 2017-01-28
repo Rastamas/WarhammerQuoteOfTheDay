@@ -87,8 +87,8 @@ public class ArchiveActivity extends AppCompatActivity {
         Calendar end = Calendar.getInstance();
         for (Date date = end.getTime(); end.after(start); end.add(Calendar.DATE, -1), date = end.getTime()) {
 
-            String key = Helper.createDateKey(date);
-            new FillArchiveTask().execute(key);
+            String dateKey = Helper.createDateKey(date);
+            new FillArchiveTask().execute("", dateKey);
         }
     }
 
@@ -214,12 +214,14 @@ public class ArchiveActivity extends AppCompatActivity {
                 Toast.makeText(ArchiveActivity.this, response.replace("%", ""), Toast.LENGTH_SHORT).show();
                 return;
             }
-            quote = response.split("#")[1];
+            String[] responseParts = response.split("#");
+            String dateKey = responseParts[0];
+            String quoteId = responseParts[1];
+            quote = responseParts[2];
             quote = quote.replaceAll("^\"|\"$", "");
-            String dateKey = response.split("#")[0];
             createNewArchiveEntry(quote, dateKey, true);
             mDBAdapter.open();
-            mDBAdapter.putQuote(dateKey, quote);
+            mDBAdapter.putQuote(dateKey, quoteId, quote);
             mDBAdapter.close();
         }
 

@@ -20,14 +20,16 @@ class GetQuoteTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... keys) {
             try {
-                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/" + keys[0]);
+                String quoteId = keys[0];
+                String dateKey = keys[1];
+                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/" + quoteId);
                 HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     String quote = bufferedReader.readLine();
                     bufferedReader.close();
                     urlConnection.disconnect();
-                    return keys[0] + "#" + quote;
+                    return quoteId + "#" + dateKey + "#" + quote;
                 } catch (ConnectException e){
                     Log.d("Error: ", e.getMessage());
                     return "%Network error!";

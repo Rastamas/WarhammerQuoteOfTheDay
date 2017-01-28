@@ -36,7 +36,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         android.support.v4.app.NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_noti_icon)
-                //.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_transparent))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_transparent))
                 .setContentTitle("Emperor Quote of the Day")
                 .setContentText("The God-Emperor of Mankind has spoken!")
                 .setWhen(when)

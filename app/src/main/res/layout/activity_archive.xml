@@ -35,6 +35,7 @@
         style="@style/WarHammerButton"
         android:onClick="getArchivesButtonOnClick"
         android:text="@string/fill_archives_button_text"
+        android:visibility="invisible"
         />
 
     <Button
