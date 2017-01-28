@@ -49,12 +49,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
         setupReferences();
-        dateKey = Helper.createDateKey(new Date());
-        initTodaysQuoteId();
+        initTodaysDateKeyAndQuoteId();
 
         mDBAdapter.open();
         if(todaysQuoteIsNotAvailable()){
+            makeSureQuoteIsHidden();
             new GetMainQuoteTask().execute(mQuoteId, dateKey);
         }
         else {
@@ -69,12 +70,16 @@ public class MainActivity extends AppCompatActivity {
         mSettingsButton.setImageResource(R.drawable.ic_settings);
     }
 
+    private void makeSureQuoteIsHidden() {
+        mQuoteTextView.setAlpha(0.0f);
+        mPreferences.edit().putBoolean("quoteVisible", false).apply();
+    }
+
     private boolean todaysQuoteIsNotAvailable() {
-        return mDBAdapter.quoteExists(dateKey);
+        return !mDBAdapter.quoteExists(dateKey);
     }
 
     private void processPreferences() {
-        mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
 
         processVisibilityPreferences();
         processAdPreferences();
@@ -89,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processQuoteTextSizePreferences() {
-        int quoteTextSize = mPreferences.getInt("quoteTextSize", 32);
+        if(mQuote == null) return;
+        int quoteTextSize = (int) Math.floor(Math.sqrt(20f / mQuote.length())  * 50); //mPreferences.getInt("quoteTextSize", 32);
         mQuoteTextView.setTextSize(quoteTextSize);
     }
 
@@ -169,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void toggleQuote(View view) {
         if (mQuote != null) {
+            processQuoteTextSizePreferences();
             String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
             mDBAdapter.open();
             String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
@@ -268,7 +275,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void initTodaysQuoteId(){
+    public void initTodaysDateKeyAndQuoteId(){
+        dateKey = Helper.createDateKey(new Date());
+
         mDBAdapter.open();
         if(mDBAdapter.quoteExists(dateKey))
         {
