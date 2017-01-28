@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -22,7 +21,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences mPreferences;
 
-    private TextView mQuoteSizeTextView;
     private Switch mNotificationSwitch;
 
 
@@ -32,7 +30,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
-        mQuoteSizeTextView = (TextView) findViewById(R.id.textview_quoteSize);
         mNotificationSwitch = (Switch) findViewById(R.id.switch_notifications);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
@@ -41,31 +38,6 @@ public class SettingsActivity extends AppCompatActivity {
         setupDateFormatControl();
         setupAdControl();
         setupNotificationControl();
-        setupQuoteSizeControl();
-    }
-
-    private void setupQuoteSizeControl() {
-        SeekBar quoteSizeSeekBar = (SeekBar) findViewById(R.id.seekbar_quotesize);
-        int quoteTextSize = mPreferences.getInt("quoteTextSize", 32);
-        quoteSizeSeekBar.setProgress(quoteTextSize);
-        mQuoteSizeTextView.setText("Quote text size: " + quoteTextSize);
-        quoteSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                mPreferences.edit().putInt("quoteTextSize", progressValue).apply();
-                mQuoteSizeTextView.setText("Quote text size: " + progressValue);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
     }
 
     private void setupNotificationControl() {
@@ -80,7 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 AlarmManager alarmManager = (AlarmManager)
-                        SettingsActivity.this.getSystemService(SettingsActivity.this.ALARM_SERVICE);
+                        SettingsActivity.this.getSystemService(ALARM_SERVICE);
                 Intent intent = new Intent(SettingsActivity.this, AlarmReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this,
                         0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
