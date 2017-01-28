@@ -85,4 +85,5 @@
     <string name="show_advertisements">Show advertisements</string>
     <string name="enable_daily_notifications">Enable daily notifications</string>
     <string name="at_this_time">At this time: </string>
+    <string name="quote_text_size">Quote text size</string>
 </resources>

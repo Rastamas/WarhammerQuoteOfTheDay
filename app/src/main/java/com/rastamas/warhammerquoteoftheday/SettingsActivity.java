@@ -4,16 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -21,12 +22,18 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences mPreferences;
 
+    private TextView mQuoteSizeTextView;
+    private Switch mNotificationSwitch;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
+        mQuoteSizeTextView = (TextView) findViewById(R.id.textview_quoteSize);
+        mNotificationSwitch = (Switch) findViewById(R.id.switch_notifications);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         toolbar.setTitle("Settings");
@@ -34,20 +41,44 @@ public class SettingsActivity extends AppCompatActivity {
         setupDateFormatControl();
         setupAdControl();
         setupNotificationControl();
+        setupQuoteSizeControl();
+    }
+
+    private void setupQuoteSizeControl() {
+        SeekBar quoteSizeSeekBar = (SeekBar) findViewById(R.id.seekbar_quotesize);
+        int quoteTextSize = mPreferences.getInt("quoteTextSize", 32);
+        quoteSizeSeekBar.setProgress(quoteTextSize);
+        mQuoteSizeTextView.setText("Quote text size: " + quoteTextSize);
+        quoteSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                mPreferences.edit().putInt("quoteTextSize", progressValue).apply();
+                mQuoteSizeTextView.setText("Quote text size: " + progressValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setupNotificationControl() {
-        Switch notificationSwitch = (Switch) findViewById(R.id.switch_notifications);
+
         boolean notificationsEnabled = mPreferences.getBoolean("notifications", false);
-        notificationSwitch.setChecked(notificationsEnabled);
+        mNotificationSwitch.setChecked(notificationsEnabled);
         if(notificationsEnabled){
-            updateTextView(mPreferences.getInt("notificationHour", 9),
+            updateNotificationTextView(mPreferences.getInt("notificationHour", 9),
                     mPreferences.getInt("notificationMinute", 0));
         }
-        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mNotificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                mPreferences.edit().putBoolean("notifications", isChecked).apply();
                 AlarmManager alarmManager = (AlarmManager)
                         SettingsActivity.this.getSystemService(SettingsActivity.this.ALARM_SERVICE);
                 Intent intent = new Intent(SettingsActivity.this, AlarmReceiver.class);
@@ -62,14 +93,16 @@ public class SettingsActivity extends AppCompatActivity {
                     AlarmManager.INTERVAL_DAY, pendingIntent);
                 }else{
                     alarmManager.cancel(pendingIntent);
-                    updateTextView(-1, -1);
+                    updateNotificationTextView(-1, -1);
                     mPreferences.edit()
                             .remove("notificationHour")
                             .remove("notificationMinute")
                             .apply();
                 }
+            mPreferences.edit().putBoolean("notifications", !isChecked).apply();
             }
         });
+
     }
 
     private boolean shouldHaveAlreadyNotified(Calendar then) {
@@ -89,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void updateTextView(int hour, int minute) {
+    private void updateNotificationTextView(int hour, int minute) {
         TextView desiredTimeTextView = (TextView) findViewById(R.id.textview_when);
         if(hour < 0 || minute < 0){
             desiredTimeTextView.setText("At this time: ");
@@ -113,13 +146,19 @@ public class SettingsActivity extends AppCompatActivity {
                         .putInt("notificationHour", hour)
                         .putInt("notificationMinute", minute)
                         .apply();
-                updateTextView(hour, minute);
+                updateNotificationTextView(hour, minute);
             }
         }, currentHour, currentMinute, true);
+        mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                mNotificationSwitch.setChecked(false);
+            }
+        });
         mDialog.setTitle("Set time of notification");
         mDialog.show();
-
     }
+
 
 
     private void setupAdControl() {
@@ -129,9 +168,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 mPreferences.edit().putBoolean("showAds", isChecked).apply();
-                Toast.makeText(SettingsActivity.this,
-                        "Restart application for the changes to take effect!",
-                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -152,4 +188,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed(){
+        setResult(RESULT_OK);
+        finish();
+    }
 }

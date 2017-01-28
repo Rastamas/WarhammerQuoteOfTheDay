@@ -52,12 +52,25 @@ public class MainActivity extends AppCompatActivity {
         setupReferences();
         dateKey = Helper.createDateKey(new Date());
         initTodaysQuoteId();
-        new GetMainQuoteTask().execute(mQuoteId, dateKey);
+
+        mDBAdapter.open();
+        if(todaysQuoteIsNotAvailable()){
+            new GetMainQuoteTask().execute(mQuoteId, dateKey);
+        }
+        else {
+            mQuote = mDBAdapter.getQuote(dateKey);
+            mQuoteTextView.setText(mQuote);
+        }
+        mDBAdapter.close();
 
         processPreferences();
         changeTheme(R.style.BloodRaven);
         setupFonts();
         mSettingsButton.setImageResource(R.drawable.ic_settings);
+    }
+
+    private boolean todaysQuoteIsNotAvailable() {
+        return mDBAdapter.quoteExists(dateKey);
     }
 
     private void processPreferences() {
@@ -66,6 +79,18 @@ public class MainActivity extends AppCompatActivity {
         processVisibilityPreferences();
         processAdPreferences();
         processBackGroundPreferences();
+        processQuoteTextSizePreferences();
+        setQuoteVisibility();
+    }
+
+    private void setQuoteVisibility() {
+        boolean quoteIsVisible = mPreferences.getBoolean("quoteVisible", false);
+        mQuoteTextView.setAlpha(quoteIsVisible ? 1.0f : 0.0f);
+    }
+
+    private void processQuoteTextSizePreferences() {
+        int quoteTextSize = mPreferences.getInt("quoteTextSize", 32);
+        mQuoteTextView.setTextSize(quoteTextSize);
     }
 
     private void processBackGroundPreferences() {
@@ -153,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             if (Helper.isServerAccessible(MainActivity.this)) {
-                new GetMainQuoteTask().execute(dateKey);
+                new GetMainQuoteTask().execute(mQuoteId, dateKey);
             }
             else{
                 Toast.makeText(MainActivity.this, "No network connection", Toast.LENGTH_SHORT).show();
@@ -162,8 +187,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (mQuoteTextView.getAlpha() == 0.0f) {
             mQuoteTextView.animate().alpha(1.0f).setDuration(1000);
+            mPreferences.edit().putBoolean("quoteVisible", true).apply();
         } else {
             mQuoteTextView.animate().alpha(0.0f).setDuration(1000);
+            mPreferences.edit().putBoolean("quoteVisible", false).apply();
         }
     }
 
@@ -228,7 +255,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonSettingsOnClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(resultCode == RESULT_OK){
+            Intent refresh = new Intent(this, MainActivity.class);
+            startActivity(refresh);
+            this.finish();
+        }
     }
 
     public void initTodaysQuoteId(){

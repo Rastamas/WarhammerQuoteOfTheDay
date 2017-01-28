@@ -90,5 +90,36 @@
             />
 
     </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp"
+        android:paddingStart="0dp">
+        <TextView
+            android:id="@+id/textview_quoteSize"
+            style="@style/SettingsTextView"
+            android:text="@string/quote_text_size"
+            />
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp"
+        android:paddingStart="0dp"
+        android:weightSum="10"
+        >
+        <SeekBar
+            android:id="@+id/seekbar_quotesize"
+            android:layout_width="match_parent"
+            android:max="64"
+            android:layout_weight="10"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:minHeight="8dp"
+            android:maxHeight="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            />
+    </TableRow>
 
 </TableLayout>
