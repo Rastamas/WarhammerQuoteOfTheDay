@@ -92,7 +92,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private boolean shouldHaveAlreadyNotified(Calendar then) {
         Calendar now = Calendar.getInstance();
-        return now.before(then);
+        return now.after(then);
     }
 
     private Calendar setTimeForNotification() {

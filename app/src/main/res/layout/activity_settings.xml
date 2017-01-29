@@ -21,60 +21,60 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="10"
+        android:weightSum="20"
         android:paddingEnd="8dp"
         android:paddingStart="0dp">
     <TextView
         android:id="@+id/textview_dateformat"
         style="@style/SettingsTextView"
         android:text="@string/use_imperial_date_format"
-        android:layout_weight="7"
+        android:layout_weight="15"
         />
 
     <Switch
         android:id="@+id/switch_dateformat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="3"/>
+        android:layout_weight="5"/>
     </TableRow>
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="10"
+        android:weightSum="20"
         android:paddingEnd="8dp"
         android:paddingStart="0dp">
         <TextView
             android:id="@+id/textview_ads"
             style="@style/SettingsTextView"
             android:text="@string/show_advertisements"
-            android:layout_weight="7"
+            android:layout_weight="15"
             />
 
         <Switch
             android:id="@+id/switch_ads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"/>
+            android:layout_weight="5"/>
     </TableRow>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="10"
+        android:weightSum="20"
         android:paddingEnd="8dp"
         android:paddingStart="0dp">
         <TextView
             android:id="@+id/textview_notifications"
             style="@style/SettingsTextView"
             android:text="@string/enable_daily_notifications"
-            android:layout_weight="7"
+            android:layout_weight="15"
             />
 
         <Switch
             android:id="@+id/switch_notifications"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"/>
+            android:layout_weight="5"/>
 
     </TableRow>
     <TableRow
