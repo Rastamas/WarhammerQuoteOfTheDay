@@ -30,7 +30,7 @@ class DBAdapter {
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
 
-    DBAdapter(Context ctx){
+    DBAdapter(Context ctx) {
         this.mContext = ctx;
     }
 
@@ -40,12 +40,12 @@ class DBAdapter {
         return this;
     }
 
-    void close(){
+    void close() {
         mDbHelper.close();
     }
 
-    boolean quoteExists(String dateKey){
-        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = ?", new String[] {dateKey}, null, null, null);
+    boolean quoteExists(String dateKey) {
+        Cursor cursor = mDb.query("quotes", new String[]{"quote"}, "date = ?", new String[]{dateKey}, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             cursor.close();
             return true;
@@ -53,8 +53,8 @@ class DBAdapter {
         return false;
     }
 
-    String getQuote(String dateKey){
-        Cursor cursor = mDb.query("quotes", new String[] {"quote"}, "date = ?", new String[] {dateKey}, null, null, null);
+    String getQuote(String dateKey) {
+        Cursor cursor = mDb.query("quotes", new String[]{"quote"}, "date = ?", new String[]{dateKey}, null, null, null);
         String quote = "";
         if (cursor != null && cursor.moveToFirst()) {
             quote = cursor.getString(0);
@@ -63,16 +63,22 @@ class DBAdapter {
         return quote;
     }
 
-    void putQuote(String dateKey, String quoteId, String quote){
-        mDb.execSQL("INSERT or REPLACE INTO quotes (date, quoteid, quote) VALUES(?,?,?)", new String[]{dateKey, quoteId, quote});
+    void putQuote(String dateKey, String quoteId, String quote) {
+        try {
+            mDb.execSQL("INSERT or REPLACE INTO quotes (date, quoteid, quote) VALUES(?,?,?)", new String[]{dateKey, quoteId, quote});
+        } catch (Exception e) {
+            mDb.execSQL("DROP TABLE quotes;");
+            mDb.execSQL(DATABASE_CREATE);
+            mDb.execSQL("INSERT or REPLACE INTO quotes (date, quoteid, quote) VALUES(?,?,?)", new String[]{dateKey, quoteId, quote});
+        }
     }
 
-    void deleteQuote(String dateKey){
-        mDb.execSQL("DELETE FROM quotes WHERE date=?", new String[] {dateKey});
+    void deleteQuote(String dateKey) {
+        mDb.execSQL("DELETE FROM quotes WHERE date=?", new String[]{dateKey});
     }
 
-    String getQuoteId(String dateKey){
-        Cursor cursor = mDb.query("quotes", new String[] {"quoteid"}, "date = ?", new String[] {dateKey}, null, null, null);
+    String getQuoteId(String dateKey) {
+        Cursor cursor = mDb.query("quotes", new String[]{"quoteid"}, "date = ?", new String[]{dateKey}, null, null, null);
         String quoteid = "";
         if (cursor != null && cursor.moveToFirst()) {
             quoteid = cursor.getString(0);
@@ -81,13 +87,20 @@ class DBAdapter {
         return quoteid;
     }
 
-    ArrayList<String> getLastThirtyQuoteIds(){
+    ArrayList<String> getLastThirtyQuoteIds() {
         ArrayList<String> quoteIds = new ArrayList<>();
-        Cursor cursor = mDb.rawQuery("SELECT quoteid FROM quotes ORDER BY _ROWID_ DESC;", null);
+        Cursor cursor;
+        try {
+            cursor = mDb.rawQuery("SELECT quoteid FROM quotes ORDER BY _ROWID_ DESC;", null);
+        } catch (Exception e) {
+            mDb.execSQL("DROP TABLE quotes;");
+            mDb.execSQL(DATABASE_CREATE);
+            return new ArrayList<>();
+        }
         int i = 30;
-        if(cursor != null){
-            if(cursor.moveToFirst()){
-                do{
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
                     quoteIds.add(cursor.getString(cursor.getColumnIndex("quoteid")));
                     i--;
                 } while (cursor.moveToNext() && i > 0);
@@ -97,16 +110,16 @@ class DBAdapter {
         return quoteIds;
     }
 
-    TreeMap<String,String> getAllQuotes(){
+    TreeMap<String, String> getAllQuotes() {
         Cursor cursor = mDb.rawQuery("SELECT date, quote FROM quotes;", null);
 
         TreeMap<String, String> quotes = new TreeMap<>();
-        if(cursor != null){
-            if(cursor.moveToFirst()){
-                int cursorDateIndex =cursor.getColumnIndex("date");
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int cursorDateIndex = cursor.getColumnIndex("date");
                 int cursorQuoteIndex = cursor.getColumnIndex("quote");
-                do{
-                quotes.put(cursor.getString(cursorDateIndex), cursor.getString(cursorQuoteIndex));
+                do {
+                    quotes.put(cursor.getString(cursorDateIndex), cursor.getString(cursorQuoteIndex));
                 } while (cursor.moveToNext());
             }
             cursor.close();
@@ -114,7 +127,7 @@ class DBAdapter {
         return quotes;
     }
 
-    void clearQuotes(){
+    void clearQuotes() {
         mDb.execSQL("DELETE FROM quotes;");
     }
 
@@ -124,10 +137,10 @@ class DBAdapter {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DATABASE_CREATE);
-    }
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(DATABASE_CREATE);
+        }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
