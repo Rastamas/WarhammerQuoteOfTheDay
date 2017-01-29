@@ -78,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
                             .remove("notificationMinute")
                             .apply();
                 }
-            mPreferences.edit().putBoolean("notifications", !isChecked).apply();
+            mPreferences.edit().putBoolean("notifications", isChecked).apply();
             }
         });
 
