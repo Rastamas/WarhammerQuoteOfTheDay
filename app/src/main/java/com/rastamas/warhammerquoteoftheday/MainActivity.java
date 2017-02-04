@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +19,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.tasks.Task;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
@@ -278,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTodaysDateKeyAndQuoteId() {
+        new GetQuoteNumberTask().execute();
         dateKey = Helper.createDateKey(new Date());
 
         mDBAdapter.open();
@@ -287,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
             Random random = new Random();
             ArrayList<String> previousIds = mDBAdapter.getLastThirtyQuoteIds();
             do {
-                mQuoteId = "" + random.nextInt(100);
+                mQuoteId = "" + random.nextInt( mPreferences.getInt("numberOfQuotes", 99));
             } while (previousIds.contains(mQuoteId));
         }
         mDBAdapter.close();
@@ -309,4 +316,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class GetQuoteNumberTask extends AsyncTask<Void, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/quoteNumber");
+                HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    String numberOfQuotes = bufferedReader.readLine();
+                    bufferedReader.close();
+                    urlConnection.disconnect();
+                    return Integer.parseInt(numberOfQuotes);
+
+                } catch (Exception e) {
+                    return 99;
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                Log.e("Error with api request!", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        @Override
+        public void onPostExecute(Integer response) {
+            mPreferences.edit().putInt("numberOfQuotes", response).apply();
+        }
+    }
 }
+
