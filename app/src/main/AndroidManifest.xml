@@ -15,7 +15,7 @@
         android:theme="@style/BloodRaven"
         android:configChanges="orientation|screenSize"
         >
-        <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".AlarmReceiver" android:enabled="true"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

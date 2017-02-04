@@ -20,6 +20,8 @@ import java.util.Calendar;
 public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences mPreferences;
+    private PendingIntent alarmPendingIntent;
+    private AlarmManager mAlarmManager;
 
     private Switch mNotificationSwitch;
 
@@ -59,29 +61,28 @@ public class SettingsActivity extends AppCompatActivity {
         mNotificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                AlarmManager alarmManager = (AlarmManager)
+                mAlarmManager = (AlarmManager)
                         SettingsActivity.this.getSystemService(ALARM_SERVICE);
-                PendingIntent pendingIntent = createPendingIntentForNotification();
+                alarmPendingIntent = createPendingIntentForNotification();
 
                 if(isChecked){
-                    saveDesiredTimeToPreferences();
-                    Calendar calendar = setTimeForNotification();
-                    if(shouldHaveAlreadyNotified(calendar))
-                        calendar.add(Calendar.DATE, 1);
-                    alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
+                    setNotificationAtDesiredTime();
                 }else{
-                    alarmManager.cancel(pendingIntent);
-                    updateNotificationTextView(-1, -1);
-                    mPreferences.edit()
-                            .remove("notificationHour")
-                            .remove("notificationMinute")
-                            .apply();
+                    cancelNotification();
                 }
             mPreferences.edit().putBoolean("notifications", isChecked).apply();
             }
         });
 
+    }
+
+    private void cancelNotification() {
+        mAlarmManager.cancel(alarmPendingIntent);
+        updateNotificationTextView(-1, -1);
+        mPreferences.edit()
+                .remove("notificationHour")
+                .remove("notificationMinute")
+                .apply();
     }
 
     private PendingIntent createPendingIntentForNotification() {
@@ -95,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         return now.after(then);
     }
 
-    private Calendar setTimeForNotification() {
+    private Calendar getTimeForNotification() {
         int desiredHour = mPreferences.getInt("notificationHour", 9);
         int desiredMinute = mPreferences.getInt("notificationMinute", 0);
 
@@ -119,7 +120,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    private void saveDesiredTimeToPreferences() {
+    private void setNotificationAtDesiredTime() {
         TimePickerDialog mDialog;
         int currentHour = mPreferences.getInt("notificationHour", 9);
         int currentMinute = mPreferences.getInt("notificationMinute", 0);
@@ -132,6 +133,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .putInt("notificationMinute", minute)
                         .apply();
                 updateNotificationTextView(hour, minute);
+                createNotification();
             }
         }, currentHour, currentMinute, true);
         mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -144,6 +146,13 @@ public class SettingsActivity extends AppCompatActivity {
         mDialog.show();
     }
 
+    private void createNotification() {
+        Calendar calendar = getTimeForNotification();
+        if(shouldHaveAlreadyNotified(calendar))
+            calendar.add(Calendar.DATE, 1);
+        mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmPendingIntent);
+    }
 
 
     private void setupAdControl() {
