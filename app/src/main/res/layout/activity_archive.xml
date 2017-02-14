@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:layout_above="@+id/archive_bottom_buttons"
         android:paddingBottom="8dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,28 +23,5 @@
         android:id="@+id/archive_list_linear_layout"
         android:orientation="vertical" />
     </ScrollView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/archive_bottom_buttons"
-        >
-    <Button
-        android:id="@+id/button_getarchives"
-        style="@style/WarHammerButton"
-        android:onClick="getArchivesButtonOnClick"
-        android:text="@string/fill_archives_button_text"
-        android:visibility="invisible"
-        />
 
-    <Button
-        android:id="@+id/button_clear_archives"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/clear_archives"
-        style="@style/WarHammerButton"
-        android:onClick="clearArchives"
-        android:visibility="invisible"
-        />
-    </LinearLayout>
 </RelativeLayout>

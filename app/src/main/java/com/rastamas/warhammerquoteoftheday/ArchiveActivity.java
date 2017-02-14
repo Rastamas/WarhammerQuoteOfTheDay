@@ -1,7 +1,6 @@
 package com.rastamas.warhammerquoteoftheday;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,12 +49,9 @@ public class ArchiveActivity extends AppCompatActivity {
         Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
                 (int) (1.0f * 400 / 1080 * dimensions.x),
                 (int) (1.0f * 160 / 1920 * dimensions.y), true);
-        Button mGetArchivesButton = (Button) findViewById(R.id.button_getarchives);
-        mGetArchivesButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
 
         mArchiveLayout = (LinearLayout) findViewById(R.id.archive_list_linear_layout);
         custom_font = Typeface.createFromAsset(getAssets(), "fonts/CaslonAntiqueBold.ttf");
-        mGetArchivesButton.setTypeface(custom_font);
     }
 
     private void loadQuotes() {
@@ -152,12 +148,4 @@ public class ArchiveActivity extends AppCompatActivity {
         if (i < 100) returnString = "0" + returnString;
         return returnString;
     }
-
-    public void clearArchives(View view) {
-        mArchiveLayout.removeAllViews();
-        mDBAdapter.open();
-        mDBAdapter.clearQuotes();
-        mDBAdapter.close();
-    }
-
 }
