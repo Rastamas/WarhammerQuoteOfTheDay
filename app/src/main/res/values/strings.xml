@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WarhammerQuoteOfTheDay</string>
+    <string name="app_name">Words of the God Emperor</string>
     <string name="clear_archives">Clear archives</string>
     <string name="bloodraven_raven_toggle"> FOR THE EMPEROR! </string>
     <string name="hide_show_top_buttons">Hide / show top buttons</string>
@@ -81,7 +81,8 @@
     <string name="archives_button_text">Archives</string>
     <string name="background_button_text">Background</string>
     <string name="fill_archives_button_text">Fill archives</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_test_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6916535752895902/5153523470</string>
     <string name="show_advertisements">Show advertisements</string>
     <string name="enable_daily_notifications">Enable daily notifications</string>
     <string name="at_this_time">At this time: </string>

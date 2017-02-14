@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             params.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.ABOVE, R.id.adView);
 
+            MobileAds.initialize(getApplicationContext(), "ca-app-pub-6916535752895902~2200057071");
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
         } else {
