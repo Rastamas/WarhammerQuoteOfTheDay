@@ -88,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
     private PendingIntent createPendingIntentForNotification() {
         Intent intent = new Intent(SettingsActivity.this, AlarmReceiver.class);
         return PendingIntent.getBroadcast(SettingsActivity.this,
-                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private boolean shouldHaveAlreadyNotified(Calendar then) {
@@ -151,7 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
         if(shouldHaveAlreadyNotified(calendar))
             calendar.add(Calendar.DATE, 1);
         mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, alarmPendingIntent);
+                24 * 60 * 60 * 1000, alarmPendingIntent);
     }
 
 
