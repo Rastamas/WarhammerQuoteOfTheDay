@@ -65,6 +65,23 @@ public class MainActivity extends AppCompatActivity {
         setupFonts();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(quoteIsOutdated()){
+            initTodaysDateKeyAndQuoteId();
+            getQuoteAndSetupTextView();
+        }
+    }
+
+    private boolean quoteIsOutdated(){
+        String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
+        mDBAdapter.open();
+        String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
+        mDBAdapter.close();
+        return mQuote.equals(prevQuote);
+    }
+
     private void getQuoteAndSetupTextView() {
         mDBAdapter.open();
         if (todaysQuoteIsAvailable()) {
@@ -205,11 +222,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadAndArchiveTodaysQuote() {
-        String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
-        mDBAdapter.open();
-        String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
-        mDBAdapter.close();
-        if (!mQuote.equals(prevQuote)) {
+
+        if (!quoteIsOutdated()) {
             archiveQuote();
         }
     }
