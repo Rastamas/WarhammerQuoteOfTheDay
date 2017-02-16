@@ -79,7 +79,12 @@ public class MainActivity extends AppCompatActivity {
         mDBAdapter.open();
         String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
         mDBAdapter.close();
-        return mQuote.equals(prevQuote);
+        return mQuote != null && mQuote.equals(prevQuote);
+        /*try {
+            return mQuote.equals(prevQuote);
+        } catch (NullPointerException ex) {
+            return false;
+        }*/
     }
 
     private void getQuoteAndSetupTextView() {
