@@ -150,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
         Calendar calendar = getTimeForNotification();
         if(shouldHaveAlreadyNotified(calendar))
             calendar.add(Calendar.DATE, 1);
-        mAlarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 24 * 60 * 60 * 1000, alarmPendingIntent);
     }
 
