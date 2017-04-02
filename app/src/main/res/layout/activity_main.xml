@@ -35,7 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:alpha="0" />
+        android:alpha="0"
+        tools:ignore="RelativeOverlap" />
 
     <RelativeLayout
         android:id="@+id/main_bottom_buttons"
@@ -76,6 +77,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_test_id"
+        ads:adUnitId="@string/banner_ad_unit_id"
         />
 </RelativeLayout>

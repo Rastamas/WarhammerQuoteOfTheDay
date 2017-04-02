@@ -87,4 +87,5 @@
     <string name="enable_daily_notifications">Enable daily notifications</string>
     <string name="at_this_time">At this time: </string>
     <string name="quote_text_size">Quote text size</string>
+    <string name="API_SERVER_ADDRESS">http://52.17.219.135:1994/api/Emperor/</string>
 </resources>

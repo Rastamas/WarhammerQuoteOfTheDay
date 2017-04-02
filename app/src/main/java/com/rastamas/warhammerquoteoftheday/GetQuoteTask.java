@@ -16,12 +16,14 @@ import java.net.URL;
 
 class GetQuoteTask extends AsyncTask<String, Void, String> {
 
-        @Override
+
+    @Override
         protected String doInBackground(String... keys) {
             try {
                 String quoteId = keys[0];
                 String dateKey = keys[1];
-                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/" + quoteId);
+                String API_SERVER_ADDRESS = App.getContext().getString(R.string.API_SERVER_ADDRESS);
+                URL apiUrl = new URL(API_SERVER_ADDRESS + quoteId);
                 HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -43,7 +45,7 @@ class GetQuoteTask extends AsyncTask<String, Void, String> {
                 }
             } catch (Exception e) {
                 Log.e("Error with api request!", e.getMessage(), e);
-                return null;
+                return "%Server error! Please contact the developer!";
             }
         }
 

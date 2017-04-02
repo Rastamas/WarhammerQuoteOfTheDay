@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         processVisibilityPreferences();
         processAdPreferences();
         processBackGroundPreferences();
-        processQuoteTextSizePreferences();
+        processQuoteTextSize();
         processQuoteVisibility();
     }
 
@@ -116,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
         mQuoteTextView.setAlpha(quoteIsVisible ? 1.0f : 0.0f);
     }
 
-    private void processQuoteTextSizePreferences() {
+    private void processQuoteTextSize() {
         if (mQuote == null) return;
-        int quoteTextSize = (int) Math.floor(Math.sqrt(20f / mQuote.length()) * 50); //mPreferences.getInt("quoteTextSize", 32);
+        int quoteTextSize = (int) Math.floor(Math.sqrt(20f / mQuote.length()) * 50);
         mQuoteTextView.setTextSize(quoteTextSize);
     }
 
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void toggleQuote(View view) {
         if (mQuote != null) {
-            processQuoteTextSizePreferences();
+            processQuoteTextSize();
             loadAndArchiveTodaysQuote();
         } else {
             if (Helper.isServerAccessible(MainActivity.this)) {
@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.BloodRaven);
         setupButtonImageBackgrounds();
         mSettingsButton.setImageResource(R.drawable.ic_settings);
+        //noinspection deprecation
         mQuoteTextView.setTextColor(getResources().getColor(R.color.bloodRavenAccent));
     }
 
@@ -322,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (response.contains("%")) {
                 mQuote = null;
-                Toast.makeText(MainActivity.this, response.replace("%", ""), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, response.replace("%", ""), Toast.LENGTH_LONG).show();
                 return;
             }
             Log.i("INFO", response);
@@ -336,7 +337,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... voids) {
             try {
-                URL apiUrl = new URL("http://52.208.157.181:1994/api/Emperor/quoteNumber");
+                String API_SERVER_ADDRESS = getString(R.string.API_SERVER_ADDRESS);
+                URL apiUrl = new URL(API_SERVER_ADDRESS + "quoteNumber");
                 HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
