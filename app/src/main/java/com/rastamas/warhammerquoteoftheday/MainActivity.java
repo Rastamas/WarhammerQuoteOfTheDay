@@ -1,7 +1,9 @@
 package com.rastamas.warhammerquoteoftheday;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -66,15 +68,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(quoteIsOutdated()){
+        if (quoteIsOutdated()) {
             initTodaysDateKeyAndQuoteId();
             getQuoteAndSetupTextView();
         }
     }
 
-    private boolean quoteIsOutdated(){
+    private boolean quoteIsOutdated() {
         String yesterdaysKey = Helper.createDateKey(new Date(new Date().getTime() - 24 * 3600 * 1000));
         mDBAdapter.open();
         String prevQuote = mDBAdapter.getQuote(yesterdaysKey);
@@ -123,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processBackGroundPreferences() {
-        backgroundID = mPreferences.getInt("backgroundID", 0);
-        if (backgroundID == 0) {
+        backgroundID = mPreferences.getInt("backgroundID", 1);
+        if (backgroundID == 1) {
             mPreferences.edit().putInt("backgroundID", 0).apply();
         }
         backgroundButtonOnClick(null);
@@ -268,21 +270,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void backgroundButtonOnClick(View view) {
         mPreferences.edit().putInt("backgroundID", backgroundID).apply();
-        switch (backgroundID) {
-            case 0:
-                mainLayout.setBackground(getDrawable(R.drawable.bloodraven_background1));
-                backgroundID++;
-                break;
-            case 1:
-                mainLayout.setBackground(getDrawable(R.drawable.death_watch));
-                backgroundID++;
-                break;
-            case 2:
-                mainLayout.setBackground(getDrawable(R.drawable.background3));
-                backgroundID = 0;
-                break;
-        }
+        Context context = getApplicationContext();
+        Resources resources = context.getResources();
+        final int resourceId = resources.getIdentifier("background" + backgroundID, "drawable",
+                context.getPackageName());
+        //noinspection deprecation
+        mainLayout.setBackground(resources.getDrawable(resourceId));
+        if(backgroundID++ == 4)
+            backgroundID = 1;
     }
+
 
     public void buttonSettingsOnClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
@@ -310,58 +307,58 @@ public class MainActivity extends AppCompatActivity {
             Random random = new Random();
             ArrayList<String> previousIds = mDBAdapter.getLastThirtyQuoteIds();
             do {
-                mQuoteId = "" + random.nextInt( mPreferences.getInt("numberOfQuotes", 99));
+                mQuoteId = "" + random.nextInt(mPreferences.getInt("numberOfQuotes", 99));
             } while (previousIds.contains(mQuoteId));
         }
         mDBAdapter.close();
     }
 
-    private class GetMainQuoteTask extends GetQuoteTask {
+private class GetMainQuoteTask extends GetQuoteTask {
 
-        @Override
-        public void onPostExecute(String response) {
+    @Override
+    public void onPostExecute(String response) {
 
-            if (response.contains("%")) {
-                mQuote = null;
-                Toast.makeText(MainActivity.this, response.replace("%", ""), Toast.LENGTH_LONG).show();
-                return;
-            }
-            Log.i("INFO", response);
-            mQuote = response.split("#")[2].replaceAll("^\"|\"$", "");
-            mQuoteTextView.setText(mQuote);
+        if (response.contains("%")) {
+            mQuote = null;
+            Toast.makeText(MainActivity.this, response.replace("%", ""), Toast.LENGTH_LONG).show();
+            return;
         }
+        Log.i("INFO", response);
+        mQuote = response.split("#")[2].replaceAll("^\"|\"$", "");
+        mQuoteTextView.setText(mQuote);
     }
+}
 
-    private class GetQuoteNumberTask extends AsyncTask<Void, Void, Integer> {
+private class GetQuoteNumberTask extends AsyncTask<Void, Void, Integer> {
 
-        @Override
-        protected Integer doInBackground(Void... voids) {
+    @Override
+    protected Integer doInBackground(Void... voids) {
+        try {
+            String API_SERVER_ADDRESS = getString(R.string.API_SERVER_ADDRESS);
+            URL apiUrl = new URL(API_SERVER_ADDRESS + "quoteNumber");
+            HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
             try {
-                String API_SERVER_ADDRESS = getString(R.string.API_SERVER_ADDRESS);
-                URL apiUrl = new URL(API_SERVER_ADDRESS + "quoteNumber");
-                HttpURLConnection urlConnection = (HttpURLConnection) apiUrl.openConnection();
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String numberOfQuotes = bufferedReader.readLine();
-                    bufferedReader.close();
-                    urlConnection.disconnect();
-                    return Integer.parseInt(numberOfQuotes);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                String numberOfQuotes = bufferedReader.readLine();
+                bufferedReader.close();
+                urlConnection.disconnect();
+                return Integer.parseInt(numberOfQuotes);
 
-                } catch (Exception e) {
-                    return 99;
-                } finally {
-                    urlConnection.disconnect();
-                }
             } catch (Exception e) {
-                Log.e("Error with api request!", e.getMessage(), e);
-                return null;
+                return 99;
+            } finally {
+                urlConnection.disconnect();
             }
-        }
-
-        @Override
-        public void onPostExecute(Integer response) {
-            mPreferences.edit().putInt("numberOfQuotes", response).apply();
+        } catch (Exception e) {
+            Log.e("Error with api request!", e.getMessage(), e);
+            return null;
         }
     }
+
+    @Override
+    public void onPostExecute(Integer response) {
+        mPreferences.edit().putInt("numberOfQuotes", response).apply();
+    }
+}
 }
 
