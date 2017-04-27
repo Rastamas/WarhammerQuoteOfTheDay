@@ -253,11 +253,11 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.bloodraven_button);
         Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
-                (int) (1.0f * 500 / 1080 * dimensions.x),
-                (int) (1.0f * 180 / 1920 * dimensions.y), true);
+                (int) (500f / 1080 * dimensions.x),
+                (int) (180f / 1920 * dimensions.y), true);
         Bitmap topImage = Bitmap.createScaledBitmap(originalImage,
-                (int) (1.0f * 400 / 1080 * dimensions.x),
-                (int) (1.0f * 160 / 1920 * dimensions.y), true);
+                (int) (400f / 1080 * dimensions.x),
+                (int) (160f / 1920 * dimensions.y), true);
         mToggleButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
         mArchivesButton.setBackground(new BitmapDrawable(getResources(), topImage));
         mThemeButton.setBackground(new BitmapDrawable(getResources(), topImage));

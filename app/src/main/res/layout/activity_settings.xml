@@ -1,94 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:style="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_settings"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/bloodRavenPrimaryDark"
-    style="@style/Theme.AppCompat.NoActionBar"
-    tools:context="com.rastamas.warhammerquoteoftheday.SettingsActivity">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/settings_toolbar"
+    android:layout_height="match_parent">
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_settings"
+        style="@style/Theme.AppCompat.NoActionBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/bloodRavenPrimaryDark"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        />
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="20"
-        android:paddingEnd="8dp"
-        android:paddingStart="0dp">
-    <TextView
-        android:id="@+id/textview_dateformat"
-        style="@style/SettingsTextView"
-        android:text="@string/use_imperial_date_format"
-        android:layout_weight="15"
-        />
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.rastamas.warhammerquoteoftheday.SettingsActivity">
 
-    <Switch
-        android:id="@+id/switch_dateformat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="5"/>
-    </TableRow>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="20"
-        android:paddingEnd="8dp"
-        android:paddingStart="0dp">
-        <TextView
-            android:id="@+id/textview_ads"
-            style="@style/SettingsTextView"
-            android:text="@string/show_advertisements"
-            android:layout_weight="15"
-            />
-
-        <Switch
-            android:id="@+id/switch_ads"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/settings_toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"/>
-    </TableRow>
+            android:background="@color/bloodRavenPrimaryDark"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="20"
-        android:paddingEnd="8dp"
-        android:paddingStart="0dp">
-        <TextView
-            android:id="@+id/textview_notifications"
-            style="@style/SettingsTextView"
-            android:text="@string/enable_daily_notifications"
-            android:layout_weight="15"
-            />
-
-        <Switch
-            android:id="@+id/switch_notifications"
-            android:layout_width="wrap_content"
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"/>
+            android:paddingEnd="8dp"
+            android:paddingStart="0dp"
+            android:weightSum="20">
 
-    </TableRow>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="8dp"
-        android:paddingStart="0dp">
-        <TextView
-            android:id="@+id/textview_when"
-            style="@style/SettingsTextView"
-            android:textSize="18sp"
-            android:paddingTop="8dp"
-            android:text="@string/at_this_time"
-            android:paddingStart="48dp"
-            tools:ignore="RtlSymmetry" />
-    </TableRow>
-</TableLayout>
+            <TextView
+                android:id="@+id/textview_dateformat"
+                style="@style/SettingsTextView"
+                android:layout_weight="15"
+                android:text="@string/use_imperial_date_format" />
+
+            <Switch
+                android:id="@+id/switch_dateformat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="0dp"
+            android:weightSum="20">
+
+            <TextView
+                android:id="@+id/textview_ads"
+                style="@style/SettingsTextView"
+                android:layout_weight="15"
+                android:text="@string/show_advertisements" />
+
+            <Switch
+                android:id="@+id/switch_ads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="0dp"
+            android:weightSum="20">
+
+            <TextView
+                android:id="@+id/textview_notifications"
+                style="@style/SettingsTextView"
+                android:layout_weight="15"
+                android:text="@string/enable_daily_notifications" />
+
+            <Switch
+                android:id="@+id/switch_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="0dp">
+
+            <TextView
+                android:id="@+id/textview_when"
+                style="@style/SettingsTextView"
+                android:paddingStart="48dp"
+                android:paddingTop="8dp"
+                android:text="@string/at_this_time"
+                android:textSize="18sp"
+                tools:ignore="RtlSymmetry" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/button_contact"
+        style="@style/WarhammerImageButton"
+        android:text="Contact"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:paddingBottom="24dp"
+        android:alpha="1"
+        android:onClick="contactButtonOnClick"
+        />
+</RelativeLayout>

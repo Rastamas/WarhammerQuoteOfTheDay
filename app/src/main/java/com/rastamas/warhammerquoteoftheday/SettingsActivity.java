@@ -7,9 +7,14 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -24,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     private AlarmManager mAlarmManager;
 
     private Switch mNotificationSwitch;
-
+    private Button mContactButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mPreferences = getSharedPreferences("WarhammerQuotePreferences", 0);
         mNotificationSwitch = (Switch) findViewById(R.id.switch_notifications);
+        mContactButton = (Button) findViewById(R.id.button_contact);
 
         setupControls();
     }
@@ -42,6 +48,17 @@ public class SettingsActivity extends AppCompatActivity {
         setupDateFormatControl();
         setupAdControl();
         setupNotificationControl();
+        setupButtonImageBackgrounds();
+    }
+
+    private void setupButtonImageBackgrounds() {
+        IntTuple dimensions = Helper.getScreenSize(getWindowManager());
+
+        Bitmap originalImage = BitmapFactory.decodeResource(getResources(), R.drawable.light_button);
+        Bitmap scaledImage = Bitmap.createScaledBitmap(originalImage,
+                (int) (500f / 1080 * dimensions.x),
+                (int) (200f / 1920 * dimensions.y), true);
+        mContactButton.setBackground(new BitmapDrawable(getResources(), scaledImage));
     }
 
     private void setupToolBar() {
@@ -186,5 +203,10 @@ public class SettingsActivity extends AppCompatActivity {
     public void onBackPressed(){
         setResult(RESULT_OK);
         finish();
+    }
+
+    public void contactButtonOnClick(View view) {
+        Intent intent = new Intent(this, ContactActivity.class);
+        startActivity(intent);
     }
 }

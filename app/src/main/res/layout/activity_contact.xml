@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="false"
+    tools:context="com.rastamas.warhammerquoteoftheday.ContactActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isScrollContainer="false"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/contact_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bloodRavenPrimaryDark"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+        <TextView
+            style="@style/SettingsTextView"
+            android:text="Feel free to message me (the developer) with recommendations, questions, or anything else!"
+            android:textColor="@color/bloodRavenAccent"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SettingsTextView"
+                android:labelFor="@+id/emailEditText"
+                android:text="E-mail" />
+
+            <TextView
+                style="@style/SettingsTextView"
+                android:text="(optional - if you want me to reach you too)"
+                android:textColor="@color/bloodRavenAccent"
+                android:textSize="14sp"
+                android:paddingTop="0dp"
+                />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:inputType="textEmailAddress" />
+
+        <TextView
+            style="@style/SettingsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/emailEditText"
+            android:text="Message" />
+
+        <EditText
+            android:id="@+id/messageEditText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:maxLines="12"
+            android:minLines="8"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_send"
+        style="@style/WarhammerImageButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:alpha="1"
+        android:paddingBottom="24dp"
+        android:text="Send" />
+
+</RelativeLayout>
