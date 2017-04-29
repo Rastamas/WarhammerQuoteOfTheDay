@@ -22,7 +22,7 @@
 
         <TextView
             style="@style/SettingsTextView"
-            android:text="Feel free to message me (the developer) with recommendations, questions, or anything else!"
+            android:text="@string/contact_greetings"
             android:textColor="@color/bloodRavenAccent"
             android:textSize="16sp" />
 
@@ -34,11 +34,11 @@
             <TextView
                 style="@style/SettingsTextView"
                 android:labelFor="@+id/emailEditText"
-                android:text="E-mail" />
+                android:text="@string/e_mail" />
 
             <TextView
                 style="@style/SettingsTextView"
-                android:text="(optional - if you want me to reach you too)"
+                android:text="@string/e_mail_optional"
                 android:textColor="@color/bloodRavenAccent"
                 android:textSize="14sp"
                 android:paddingTop="0dp"
@@ -57,8 +57,8 @@
             style="@style/SettingsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@+id/emailEditText"
-            android:text="Message" />
+            android:labelFor="@+id/messageEditText"
+            android:text="@string/message" />
 
         <EditText
             android:id="@+id/messageEditText"
@@ -81,6 +81,8 @@
         android:layout_alignParentEnd="true"
         android:alpha="1"
         android:paddingBottom="24dp"
-        android:text="Send" />
+        android:text="@string/send"
+        android:onClick="sendButtonOnClick"
+        />
 
 </RelativeLayout>
