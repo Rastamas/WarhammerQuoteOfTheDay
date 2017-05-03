@@ -75,7 +75,6 @@ public class ContactActivity extends AppCompatActivity {
         if (lastFeedbackWasMoreThanADayAgo()) {
             Toast.makeText(this, "Feedback sent!", Toast.LENGTH_SHORT).show();
             new RetrievePostResponse().execute(mEmailEditText.getText().toString(), mMessageEditText.getText().toString());
-            mPreferences.edit().putString("last_feedback", Calendar.getInstance().getTime().toString()).apply();
         } else {
             Toast.makeText(this, "Sorry, only one feedback in 12 hours", Toast.LENGTH_LONG).show();
         }
@@ -136,6 +135,7 @@ public class ContactActivity extends AppCompatActivity {
                     Toast.makeText(ContactActivity.this, "Network error!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(ContactActivity.this, response.replaceAll("\"", "") + "!\nThank you!", Toast.LENGTH_SHORT).show();
+                mPreferences.edit().putString("last_feedback", Calendar.getInstance().getTime().toString()).apply();
             }
         }
     }
